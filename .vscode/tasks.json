@@ -1,0 +1,43 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build (PIO)",
+			"type": "shell",
+			"command": "C:\\Users\\stanl\\.platformio\\penv\\Scripts\\platformio.exe",
+			"args": [
+				"run"
+			],
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Upload (PIO)",
+			"type": "shell",
+			"command": "C:\\Users\\stanl\\.platformio\\penv\\Scripts\\platformio.exe",
+			"args": [
+				"run",
+				"--target",
+				"upload",
+				"--upload-port",
+				"COM8"
+			],
+			"isBackground": false,
+			"group": "none"
+		},
+		{
+			"label": "Upload (PIO, auto port)",
+			"type": "shell",
+			"command": "C:\\Users\\stanl\\.platformio\\penv\\Scripts\\platformio.exe",
+			"args": [
+				"run",
+				"--target",
+				"upload"
+			],
+			"isBackground": false,
+			"group": "none"
+		}
+	]
+}
