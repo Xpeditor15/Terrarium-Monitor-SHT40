@@ -1,39 +1,51 @@
-#include <Arduino.h>
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+/*
+I2C Addresses: 
+- 0.96 inch OLED screen: 0x3c
+- BME280: 0x76
+- SHT40: 0x44
+*/
 
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
-#define OLED_RESET -1
 
-// Use I2C pins that don't conflict with ESP32-S3 USB (GPIO19/20 are USB D-/D+)
-#define OLED_SDA 21
-#define OLED_SCL 22
+#include "main.h"
 
+
+TwoWire secondWire = TwoWire(1);
+
+
+//Create instances of OLED display, BME280, SHT40
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+Adafruit_BME280 bme;
+Adafruit_SHT4x sht40 = Adafruit_SHT4x();
+
+//Define Unified Sensor
+Adafruit_Sensor *bmeTemp = bme.getTemperatureSensor();
+Adafruit_Sensor *bmeHumi = bme.getHumiditySensor();
+Adafruit_Sensor *bmePres = bme.getPressureSensor();
+
 
 void setup() {
-  Serial.begin(115200);
-  // Initialize I2C on the selected pins with a stable 400kHz clock
-  Wire.begin(OLED_SDA, OLED_SCL, 400000);
+    Serial.begin(115200);
+    Wire.begin(OLED_SDA, OLED_SCL, 400000); //Initialize both I2C buses
+    secondWire.begin(SECOND_SDA, SECOND_SCL, 400000);
 
-  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3c)) {
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;);
-  }
-  delay(1000);
-  display.clearDisplay();
+    if (!setupDisplay()) {
+      for(;;);
+    }
 
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 10);
-  display.println("Hello, world!");
-  display.display();
-  Serial.println(F("Printed Hello, World"));
-  delay(2000);
+    if (!setupBME(&secondWire, 0x76)) {
+      for(;;);
+    }
+
+    if (!setupSHT(&secondWire)) {
+      for(;;);
+    }
+
+    delay(3000);
+    resetSetupDisplay();
+    printDefaultStats();
 }
 
 void loop() {
-
+    printData();
+    delay(3000);
 }

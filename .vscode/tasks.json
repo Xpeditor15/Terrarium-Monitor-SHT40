@@ -38,6 +38,42 @@
 			],
 			"isBackground": false,
 			"group": "none"
+		},
+		{
+			"label": "Build (PIO)",
+			"type": "shell",
+			"command": "C:\\Users\\stanl\\.platformio\\penv\\Scripts\\platformio.exe",
+			"args": [
+				"run"
+			],
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build (PIO)",
+			"type": "shell",
+			"command": "C:\\Users\\stanl\\.platformio\\penv\\Scripts\\platformio.exe",
+			"args": [
+				"run"
+			],
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build (PIO)",
+			"type": "shell",
+			"command": "C:\\Users\\stanl\\.platformio\\penv\\Scripts\\platformio.exe",
+			"args": [
+				"run"
+			],
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
 		}
 	]
 }
