@@ -8,7 +8,6 @@ I2C Addresses:
 
 #include "main.h"
 
-
 TwoWire secondWire = TwoWire(1);
 
 
@@ -22,11 +21,29 @@ Adafruit_Sensor *bmeTemp = bme.getTemperatureSensor();
 Adafruit_Sensor *bmeHumi = bme.getHumiditySensor();
 Adafruit_Sensor *bmePres = bme.getPressureSensor();
 
+//Page counters
+/*
+Page 0: SHT40 and BME280 Humidity
+Page 1: SHT40 and BME280 Temperature
+Page 2: BME280 Pressure and Altitude
+Page 3: Settings 
+*/
+
+Page currentPage = Page::Humidity;
+Page previousPage = Page::Count; //defaults to unset/count during initialization
 
 void setup() {
     Serial.begin(115200);
     Wire.begin(OLED_SDA, OLED_SCL, 400000); //Initialize both I2C buses
     secondWire.begin(SECOND_SDA, SECOND_SCL, 400000);
+
+    pinMode(NEXT_BUT, INPUT_PULLUP);
+    pinMode(PREV_BUT, INPUT_PULLUP);
+
+    attachInterrupt(digitalPinToInterrupt(NEXT_BUT), nextPageISR, FALLING);
+    attachInterrupt(digitalPinToInterrupt(PREV_BUT), prevPageISR, FALLING);
+
+    prevData.current = currentPage;
 
     if (!setupDisplay()) {
       for(;;);
@@ -42,10 +59,9 @@ void setup() {
 
     delay(3000);
     resetSetupDisplay();
-    printDefaultStats();
 }
 
 void loop() {
-    printData();
+    displayPage();
     delay(3000);
 }
