@@ -1,11 +1,15 @@
 #include "main.h"
 
+bool nextPageFlag = false;
+bool prevPageFlag = false;
+
 void IRAM_ATTR nextPageISR() {
-    nextPage();
+    Serial.println("next page");
+    nextPageFlag = true;
 }
 
 void IRAM_ATTR prevPageISR() {
-    prevPage();
+    prevPageFlag = true;
 }
 
 bool isPrevDataEmpty() {
@@ -34,8 +38,23 @@ void readHumi() {
 
 void readTemp() {
     bme.takeForcedMeasurement();
+
+    prevData.prevBMETemp = bme.readTemperature();
     sensors_event_t temp, _;
 
     sht40.getEvent(&_, &temp);
     prevData.prevSHTTemp = temp.temperature;
+}
+
+void checkFlags() {
+    if (nextPageFlag) {
+        Serial.println("next button pressed");
+        nextPage();
+        nextPageFlag = false;
+    }
+    if (prevPageFlag) {
+        Serial.println("prev button pressed");
+        prevPage();
+        prevPageFlag = false;
+    }
 }

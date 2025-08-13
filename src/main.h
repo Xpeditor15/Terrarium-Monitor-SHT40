@@ -73,6 +73,8 @@ void resetSetupDisplay();
 void printDefaultStats();
 void printHumiPageStats();
 void printHumiPageData();
+void printTempPageStats();
+void printTempPageData();
 void clearPrintedPage(Page page);
 void clearPrintedData(Page page);
 void resetPrintedData();
@@ -90,12 +92,16 @@ void printSHT();
 void readSHT();
 
 //Helper Functions:
+extern bool nextPageFlags;
+extern bool prevPageFlags;
+
 void IRAM_ATTR nextPageISR();
 void IRAM_ATTR prevPageISR();
 bool isPrevDataEmpty();
 void readAllSens();
 void readHumi();
 void readTemp();
+void checkFlags();
 
 //Page Control Functions:
 void nextPage();
@@ -103,3 +109,4 @@ void prevPage();
 void goToFirstPage();
 void displayPage();
 void humidityPage();
+void tempPage();

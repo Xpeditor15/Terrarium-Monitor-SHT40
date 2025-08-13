@@ -30,7 +30,7 @@ Page 3: Settings
 */
 
 Page currentPage = Page::Humidity;
-Page previousPage = Page::Count; //defaults to unset/count during initialization
+Page previousPage = Page::Humidity; //defaults to unset/count during initialization
 
 void setup() {
     Serial.begin(115200);
@@ -62,6 +62,5 @@ void setup() {
 }
 
 void loop() {
-    displayPage();
-    delay(3000);
+  displayPage();
 }

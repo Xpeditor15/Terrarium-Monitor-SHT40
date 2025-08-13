@@ -46,9 +46,10 @@ void printDefaultStats() { //redundant, based on old implementation
 void clearPrintedPage(Page page) { //reset the default stats for humi, temps...
     display.setTextColor(SSD1306_BLACK);
     display.setTextSize(2);
+    Serial.printf("Clearing page %d\n", static_cast<uint8_t>(page));
 
     switch (page) {
-        case Page::Humidity:
+        case Page::Humidity: {
             static const uint8_t imageData[] = {
                 0x00,0x00
                 ,0x00,0x00
@@ -73,25 +74,72 @@ void clearPrintedPage(Page page) { //reset the default stats for humi, temps...
             display.setCursor(0, 24);
             display.println("BME: ");
             display.setCursor(60, 24);
-            display.printf("%.1fC\n", prevData.prevBMEHumi);
+            display.printf("%.1f%\n", prevData.prevBMEHumi);
             display.setCursor(0, 48);
             display.println("SHT: ");
             display.setCursor(60, 48);
-            display.printf("%.1fC\n", prevData.prevSHTHumi);
+            display.printf("%.1f%\n", prevData.prevSHTHumi);
+            break;
+        }
+        case Page::Temperature: {
+            static const uint8_t imageData[] = {
+                0x00,0x00,
+                0x01,0x80,
+                0x02,0x40,
+                0x02,0x40,
+                0x02,0x40,
+                0x02,0x40,
+                0x02,0x40,
+                0x02,0x40,
+                0x03,0xc0,
+                0x03,0xc0,
+                0x05,0xa0,
+                0x07,0xe0,
+                0x07,0xe0,
+                0x05,0xa0,
+                0x01,0xc0,
+                0x00,0x00
+            };
+            display.setCursor(0, 0);
+            display.println("Temp: ");
+            display.drawBitmap(60, 0, imageData, 16, 16, 1);
+            display.setCursor(0, 24);
+            display.println("BME: ");
+            display.setCursor(60, 24);
+            display.printf("%.1fC\n", prevData.prevBMETemp);
+            display.setCursor(0, 48);
+            display.println("SHT: ");
+            display.setCursor(60, 48);
+            display.printf("%.1fC\n", prevData.prevSHTTemp);
+            break;
+        }
     }
 
     display.display();
 }
 
 void clearPrintedData(Page page) {
+    Serial.printf("Clearing data for page %d\n", static_cast<uint8_t>(page));
     display.setTextColor(SSD1306_BLACK);
     display.setTextSize(2);
 
-    display.setCursor(60, 24);
-    display.printf("%.1fC\n", prevData.prevBMEHumi);
-    display.setCursor(60, 48);
-    display.printf("%.1fC\n", prevData.prevSHTHumi);
-
+    switch (page) {
+        case Page::Humidity:{
+            display.setCursor(60, 24);
+            display.printf("%.1f%\n", prevData.prevBMEHumi);
+            display.setCursor(60, 48);
+            display.printf("%.1f%\n", prevData.prevSHTHumi);
+            break;
+        }
+        case Page::Temperature:{
+            display.setCursor(60, 24);
+            display.printf("%.1fC\n", prevData.prevBMETemp);
+            display.setCursor(60, 48);
+            display.printf("%.1fC\n", prevData.prevSHTTemp);
+            break;
+        }
+    }
+    Serial.println("Cleared");
     display.display();
 }
 
@@ -129,15 +177,64 @@ void printHumiPageStats() { //prints the default stats for humi
 
 void printHumiPageData() { //prints the humidity data
     if (!isPrevDataEmpty()) {
-        clearPrintedData(Page::Humidity);
+        clearPrintedData(previousPage);
     }
+    
     readHumi();
+    Serial.printf("Current new SHT: %.1f\n", prevData.prevSHTHumi);
     display.setTextColor(SSD1306_WHITE);
     display.setTextSize(2);
     display.setCursor(60, 24);
-    display.printf("%.1f%\n", prevData.prevBMEHumi);
+    display.printf("%.1f%%\n", prevData.prevBMEHumi);
     display.setCursor(60, 48);
-    display.printf("%.1f%\n", prevData.prevSHTHumi);
+    display.printf("%.1f%%\n", prevData.prevSHTHumi);
+    display.display();
+}
+
+void printTempPageStats() {
+    static const uint8_t imageData[] = {
+        0x00,0x00,
+        0x01,0x80,
+        0x02,0x40,
+        0x02,0x40,
+        0x02,0x40,
+        0x02,0x40,
+        0x02,0x40,
+        0x02,0x40,
+        0x03,0xc0,
+        0x03,0xc0,
+        0x05,0xa0,
+        0x07,0xe0,
+        0x07,0xe0,
+        0x05,0xa0,
+        0x01,0xc0,
+        0x00,0x00
+    };
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(0, 0);
+    display.println("Temp: ");
+    display.drawBitmap(60, 0, imageData, 16, 16, 1);
+    display.setCursor(0, 24);
+    display.println("BME: ");
+    display.setCursor(0, 48);
+    display.println("SHT: ");
+    display.display();
+}
+
+void printTempPageData() {
+    if (!isPrevDataEmpty()) {
+        clearPrintedData(previousPage);
+        delay(3000);
+    }
+
+    readTemp();
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(60, 24);
+    display.printf("%.1fC\n", prevData.prevBMETemp);
+    display.setCursor(60, 48);
+    display.printf("%.1fC\n", prevData.prevSHTTemp);
     display.display();
 }
 
@@ -186,23 +283,22 @@ void printData() { //redundant
 
 void test() {
     static const uint8_t imageData[] = {
-        0x00,0x00
-        ,0x00,0x00
-        ,0x00,0x00
-        ,0x01,0x00
-        ,0x01,0x80
-        ,0x01,0x80
-        ,0x03,0xc0
-        ,0x03,0xc0
-        ,0x07,0xe0
-        ,0x07,0xe0
-        ,0x03,0xc0
-        ,0x03,0xc0
-        ,0x00,0x00
-        ,0x00,0x00
-        ,0x00,0x00
-        ,0x00,0x00
-
+0x00,0x00
+,0x01,0x80
+,0x02,0x40
+,0x02,0x40
+,0x02,0x40
+,0x02,0x40
+,0x02,0x40
+,0x02,0x40
+,0x03,0xc0
+,0x03,0xc0
+,0x05,0xa0
+,0x07,0xe0
+,0x07,0xe0
+,0x05,0xa0
+,0x01,0xc0
+,0x00,0x00
     };
     display.clearDisplay();
     /*display.setTextColor(SSD1306_WHITE);
