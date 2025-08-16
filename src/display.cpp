@@ -126,9 +126,9 @@ void clearPrintedData(Page page) {
     switch (page) {
         case Page::Humidity:{
             display.setCursor(60, 24);
-            display.printf("%.1f%\n", prevData.prevBMEHumi);
+            display.printf("%.1f%%\n", prevData.prevBMEHumi);
             display.setCursor(60, 48);
-            display.printf("%.1f%\n", prevData.prevSHTHumi);
+            display.printf("%.1f%%\n", prevData.prevSHTHumi);
             break;
         }
         case Page::Temperature:{

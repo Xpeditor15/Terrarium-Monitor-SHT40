@@ -61,5 +61,165 @@ void printHumiPageStats() { //prints the default words for humi page
 }
 
 void printHumiPageData() {
-    
+    if (!isPrevDataEmpty()) {
+        Serial.printf("Clearing previous data, %d\n", static_cast<uint8_t>(previousPage));
+        clearPrintedData(previousPage);
+    }
+
+    readHumi();
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(60, 24);
+    display.printf("%.1f%%\n", prevData.prevBMEHumi);
+    display.setCursor(60, 48);
+    display.printf("%.1f%%\n", prevData.prevSHTHumi);
+    display.display();
+}
+
+void printTempPageStats() {
+    static const uint8_t imageData[] = {
+        0x00,0x00,
+        0x01,0x80,
+        0x02,0x40,
+        0x02,0x40,
+        0x02,0x40,
+        0x02,0x40,
+        0x02,0x40,
+        0x02,0x40,
+        0x03,0xc0,
+        0x03,0xc0,
+        0x05,0xa0,
+        0x07,0xe0,
+        0x07,0xe0,
+        0x05,0xa0,
+        0x01,0xc0,
+        0x00,0x00
+    };
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(0, 0);
+    display.println("Temp: ");
+    display.drawBitmap(60, 0, imageData, 16, 16, 1);
+    display.setCursor(0, 24);
+    display.println("BME: ");
+    display.println(0, 48);
+    display.println("SHT: ");
+    display.display();
+}
+
+void printTempPageData() {
+    if (!isPrevDataEmpty()) {
+        Serial.printf("Clearing previous data, %d\n", static_cast<uint8_t>(previousPage));
+        clearPrintedData(previousPage);
+    }
+
+    readTemp();
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(60, 24);
+    display.printf("%.1fC\n", prevData.prevBMETemp);
+    display.setCursor(60, 48);
+    display.printf("%.1fC\n", prevData.prevSHTTemp);
+    display.display();
+}
+
+void clearPrintedData(Page page) {
+    Serial.printf("In clearPrintedData, clearing data %d\n", static_cast<uint8_t>(page));
+    display.setTextColor(SSD1306_BLACK);
+    display.setTextSize(2);
+
+    switch (page) {
+        case Page::Humidity: {
+            display.setCursor(60, 24);
+            display.printf("%.1f%%\n", prevData.prevBMEHumi);
+            display.setCursor(60, 48);
+            display.printf("%.1f%%\n", prevData.prevSHTHumi);
+            break;
+        } 
+        case Page::Temperature: {
+            display.setCursor(60, 24);
+            display.printf("%.1fC\n", prevData.prevBMETemp);
+            display.setCursor(60, 48);
+            display.printf("%.1fC\n", prevData.prevSHTTemp);
+            break;
+        }
+        display.display();
+    }
+}
+
+void clearPrintedPage(Page page) {
+    display.setTextColor(SSD1306_BLACK);
+    display.setTextSize(2);
+    Serial.printf("In clearPrintedPage, Clearing page %d\n", static_cast<uint8_t>(page));
+
+    switch (page) {
+        case Page::Humidity: {
+            Serial.println("Clearing Humidity Page");
+            static const uint8_t imageData[] = {
+                0x00,0x00
+                ,0x00,0x00
+                ,0x00,0x00
+                ,0x01,0x00
+                ,0x01,0x80
+                ,0x01,0x80
+                ,0x03,0xc0
+                ,0x03,0xc0
+                ,0x07,0xe0
+                ,0x07,0xe0
+                ,0x03,0xc0
+                ,0x03,0xc0
+                ,0x00,0x00
+                ,0x00,0x00
+                ,0x00,0x00
+                ,0x00,0x00
+            };
+            display.setCursor(0, 0);
+            display.println("Humi: ");
+            display.drawBitmap(60, 0, imageData, 16, 16, 1);
+            display.setCursor(0, 24);
+            display.println("BME: ");
+            display.setCursor(60, 24);
+            display.printf("%.1f%\n", prevData.prevBMEHumi);
+            display.setCursor(0, 48);
+            display.println("SHT: ");
+            display.setCursor(60, 48);
+            display.printf("%.1f%\n", prevData.prevSHTHumi);
+            break;
+        }
+        case Page::Temperature: {
+            Serial.println("Clearing Temperature Page");
+            static const uint8_t imageData[] = {
+                0x00,0x00,
+                0x01,0x80,
+                0x02,0x40,
+                0x02,0x40,
+                0x02,0x40,
+                0x02,0x40,
+                0x02,0x40,
+                0x02,0x40,
+                0x03,0xc0,
+                0x03,0xc0,
+                0x05,0xa0,
+                0x07,0xe0,
+                0x07,0xe0,
+                0x05,0xa0,
+                0x01,0xc0,
+                0x00,0x00
+            };
+            display.setCursor(0, 0);
+            display.println("Temp: ");
+            display.drawBitmap(60, 0, imageData, 16, 16, 1);
+            display.setCursor(0, 24);
+            display.println("BME: ");
+            display.setCursor(60, 24);
+            display.printf("%.1fC\n", prevData.prevBMETemp);
+            display.setCursor(0, 48);
+            display.println("SHT: ");
+            display.setCursor(60, 48);
+            display.printf("%.1fC\n", prevData.prevSHTTemp);
+            break;
+        }
+
+        display.display();
+    }
 }

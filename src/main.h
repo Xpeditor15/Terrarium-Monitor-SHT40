@@ -70,16 +70,16 @@ extern Adafruit_SHT4x sht40;
 //Display Functions:
 bool setupDisplay();
 void resetSetupDisplay();
-void printDefaultStats();
+//void printDefaultStats();
 void printHumiPageStats();
 void printHumiPageData();
 void printTempPageStats();
 void printTempPageData();
 void clearPrintedPage(Page page);
 void clearPrintedData(Page page);
-void resetPrintedData();
-void printData();
-void test();
+//void resetPrintedData();
+//void printData();
+//void test();
 
 //BME Functions:
 bool setupBME(TwoWire* i2cbme, uint8_t addr = 0x76);
