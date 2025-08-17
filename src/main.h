@@ -25,7 +25,8 @@
 enum class Page : uint8_t {
     Humidity,
     Temperature,
-    PressureAlt,
+    Pressure,
+    Altitude,
     Settings, 
     Count
 };
@@ -53,6 +54,7 @@ struct pageControlBtn {
 
 struct userSettings {
     unsigned long dataRefreshDelay = 3000;
+    unsigned long sleepDelay = 60000;
 };
 
 extern Page currentPage;
@@ -91,16 +93,17 @@ extern Adafruit_SHT4x sht40;
 //Display Functions:
 bool setupDisplay();
 void resetSetupDisplay();
-//void printDefaultStats();
 void printHumiPageStats();
 void printHumiPageData();
 void printTempPageStats();
 void printTempPageData();
+void printPresPageStats();
+void printPresPageData();
+void printAltPageStats();
+void printAltPageData();
 void clearPrintedPage(Page page);
 void clearPrintedData(Page page);
-//void resetPrintedData();
-//void printData();
-//void test();
+void test();
 
 //BME Functions:
 bool setupBME(TwoWire* i2cbme, uint8_t addr = 0x76);
@@ -119,6 +122,8 @@ bool isPrevDataEmpty();
 void readAllSens();
 void readHumi();
 void readTemp();
+void readPres();
+void readAlt();
 void checkFlags();
 bool isFlagChanged();
 
@@ -129,3 +134,5 @@ void goToFirstPage();
 void displayPage();
 void humidityPage();
 void tempPage();
+void presPage();
+void altPage();

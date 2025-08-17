@@ -46,6 +46,14 @@ void displayPage() {
             tempPage();
             break; 
         }
+        case Page::Pressure:{
+            presPage();
+            break;
+        }
+        case Page::Altitude: {
+            altPage();
+            break;
+        }
     }
     previousPage = currentPage;
 }
@@ -83,4 +91,28 @@ void tempPage() {
     }
     printTempPageData();
     Serial.println("printedTempData");
+}
+
+void presPage() {
+    if (!hasPrintedStats) {
+        clearPrintedPage(previousPage);
+        printPresPageStats();
+        hasPrintedStats = true;
+        Serial.println("printedPresStats, hasPrintedStats is true");
+    }
+
+    printPresPageData();
+    Serial.println("printedPresData");
+}
+
+void altPage() {
+    if (!hasPrintedStats) {
+        clearPrintedPage(previousPage);
+        printAltPageStats();
+        hasPrintedStats = true;
+        Serial.println("printedAltStats, hasPrintedStats is true");
+    }
+
+    printAltPageData();
+    Serial.println("printedAltData");
 }

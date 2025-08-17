@@ -3,11 +3,6 @@
 buttonPress btnPress;
 pageControlBtn pageBtn;
 
-/*void IRAM_ATTR nextPageISR() {
-    Serial.println("next page");
-    nextPageFlag = true;
-}*/
-
 void IRAM_ATTR nextPageISR() {
     unsigned long current = millis();
     
@@ -31,10 +26,6 @@ void IRAM_ATTR prevPageISR() {
     pageBtn.prevPageFlag = true;
     Serial.println("Prev Page");
 }
-
-/*void IRAM_ATTR prevPageISR() {
-    prevPageFlag = true;
-}*/
 
 bool isPrevDataEmpty() {
     return isnan(prevData.prevBMETemp)
@@ -68,6 +59,18 @@ void readTemp() {
 
     sht40.getEvent(&_, &temp);
     prevData.prevSHTTemp = temp.temperature;
+}
+
+void readPres() {
+    bme.takeForcedMeasurement();
+
+    prevData.prevBMEPres = bme.readPressure() / 100.0F;
+}
+
+void readAlt() {
+    bme.takeForcedMeasurement();
+
+    prevData.prevBMEAlt = bme.readAltitude(SEALEVELPRESSURE);
 }
 
 void checkFlags() {

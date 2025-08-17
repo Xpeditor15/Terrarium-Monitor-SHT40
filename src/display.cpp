@@ -112,6 +112,9 @@ void printTempPageData() {
     if (!isPrevDataEmpty()) {
         Serial.printf("Clearing previous data, %d\n", static_cast<uint8_t>(previousPage));
         clearPrintedData(previousPage);
+        if (previousPage == Page::Pressure) {
+            printTempPageStats();
+        }
     }
 
     readTemp();
@@ -125,7 +128,99 @@ void printTempPageData() {
 }
 
 void printPresPageStats() {
+    static const uint8_t imageData[] ={
+        0x00,0x00,
+        0x07,0xc0,
+        0x0c,0x60,
+        0x18,0x38,
+        0x70,0x0c,
+        0x40,0x04,
+        0xc0,0x06,
+        0x40,0x04,
+        0x60,0x0c,
+        0x3f,0xf8,
+        0x01,0xc0,
+        0x0c,0x80,
+        0x0c,0x20,
+        0x03,0x60,
+        0x01,0x00,
+        0x00,0x00
+    };
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(0, 0);
+    display.println("Atm: ");
+    display.drawBitmap(60, 0, imageData, 16, 16, 1);
+    display.setCursor(0, 24);
+    display.println("Pressure: ");
+    //display.setCursor(0, 48);
+    //display.println("Alt: ");
+    display.display();
+}
 
+void printPresPageData() {
+    if (!isPrevDataEmpty()) {
+        Serial.printf("Clearing previous data, %d\n", static_cast<uint8_t>(previousPage));
+        clearPrintedData(previousPage);
+        if (previousPage == Page::Temperature) {
+            printPresPageStats();
+        }
+    }
+
+    readPres();
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(0, 48);
+    display.printf("%.1fhPa\n", prevData.prevBMEPres);
+    //display.setCursor(60, 48);
+    //display.printf("%.1fm\n", prevData.prevBMEAlt);
+    display.display();
+}
+
+void printAltPageStats() {
+    static const uint8_t imageData[] = {
+        0x00,0x00,
+        0x07,0xc0,
+        0x0c,0x60,
+        0x18,0x38,
+        0x70,0x0c,
+        0x40,0x04,
+        0xc0,0x06,
+        0x40,0x04,
+        0x60,0x0c,
+        0x3f,0xf8,
+        0x01,0xc0,
+        0x0c,0x80,
+        0x0c,0x20,
+        0x03,0x60,
+        0x01,0x00,
+        0x00,0x00
+    };
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(0, 0);
+    display.println("Atm: ");
+    display.drawBitmap(60, 0, imageData, 16, 16, 1);
+    display.setCursor(0, 24);
+    display.println("Altitude: ");
+}
+
+void printAltPageData() {
+    if (!isPrevDataEmpty()) {
+        Serial.printf("Clearing previous data, %d\n", static_cast<uint8_t>(previousPage));
+        clearPrintedData(previousPage);
+    }
+
+    readAlt();
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(0, 48);
+    display.printf("%.1fm\n", prevData.prevBMEAlt);
+    display.display();
+}
+
+void printSettingsPageStats() {
+    
 }
 
 void clearPrintedData(Page page) {
@@ -146,6 +241,18 @@ void clearPrintedData(Page page) {
             display.printf("%.1fC\n", prevData.prevBMETemp);
             display.setCursor(60, 48);
             display.printf("%.1fC\n", prevData.prevSHTTemp);
+            break;
+        }
+        case Page::Pressure: {
+            display.setCursor(0, 48);
+            display.printf("%.1fhPa\n", prevData.prevBMEPres);
+            //display.setCursor(60, 48);
+            //display.printf("%.1fm\n", prevData.prevBMEAlt);
+            display.display();
+        }
+        case Page::Altitude: {
+            display.setCursor(0, 48);
+            display.printf("%.1fm\n", prevData.prevBMEAlt);
             break;
         }
     }
@@ -224,10 +331,93 @@ void clearPrintedPage(Page page) {
             display.printf("%.1fC\n", prevData.prevSHTTemp);
             break;
         }
+        case Page::Pressure: {
+            Serial.println("Clearing alt page");
+            static const uint8_t imageData[] = {
+                0x00,0x00,
+                0x07,0xc0,
+                0x0c,0x60,
+                0x18,0x38,
+                0x70,0x0c,
+                0x40,0x04,
+                0xc0,0x06,
+                0x40,0x04,
+                0x60,0x0c,
+                0x3f,0xf8,
+                0x01,0xc0,
+                0x0c,0x80,
+                0x0c,0x20,
+                0x03,0x60,
+                0x01,0x00,
+                0x00,0x00
+            };
+            display.setCursor(0, 0);
+            display.println("Atm: ");
+            display.drawBitmap(60, 0, imageData, 16, 16, 0);
+            display.setCursor(0, 24);
+            display.println("Pressure: ");
+            display.setCursor(0, 48);
+            display.printf("%.1fhPa\n", prevData.prevBMEPres);
+            //display.setCursor(0, 48);
+            //display.println("Alt: ");
+            //display.printf("%.1fm\n", prevData.prevBMEAlt);
+            break;
+        }
+        case Page::Altitude: {
+            static const uint8_t imageData[] = {
+                0x00,0x00,
+                0x07,0xc0,
+                0x0c,0x60,
+                0x18,0x38,
+                0x70,0x0c,
+                0x40,0x04,
+                0xc0,0x06,
+                0x40,0x04,
+                0x60,0x0c,
+                0x3f,0xf8,
+                0x01,0xc0,
+                0x0c,0x80,
+                0x0c,0x20,
+                0x03,0x60,
+                0x01,0x00,
+                0x00,0x00
+            };
+            display.setCursor(0, 0);
+            display.println("Atm: ");
+            display.drawBitmap(60, 0, imageData, 16, 16, 0);
+            display.setCursor(0, 24);
+            display.println("Altitude: ");
+            display.setCursor(0, 48);
+            display.printf("%.1fm\n", prevData.prevBMEAlt);
+            break;
+        }
 
     }
     display.display();
 }
 
 void test() {
+    static const uint8_t imageData[] ={
+0x00,0x00
+,0x07,0xc0
+,0x0c,0x60
+,0x18,0x38
+,0x70,0x0c
+,0x40,0x04
+,0xc0,0x06
+,0x40,0x04
+,0x60,0x0c
+,0x3f,0xf8
+,0x01,0xc0
+,0x0c,0x80
+,0x0c,0x20
+,0x03,0x60
+,0x01,0x00
+,0x00,0x00
+
+    };
+
+    display.clearDisplay();
+    display.drawBitmap(60, 0, imageData, 16, 16, 1);
+    display.display();
 }
