@@ -4,7 +4,7 @@ bool hasPrintedStats = false;
 unsigned long prevDisplay;
 
 void nextPage() {
-    previousPage = currentPage;
+    //previousPage = currentPage;
     hasPrintedStats = false;
     uint8_t i = static_cast<uint8_t>(currentPage);
     uint8_t count = static_cast<uint8_t>(Page::Count);
@@ -13,7 +13,7 @@ void nextPage() {
 }
 
 void prevPage() {
-    previousPage = currentPage;
+    //previousPage = currentPage;
     hasPrintedStats = false;
     uint8_t i = static_cast<uint8_t>(currentPage);
     uint8_t count = static_cast<uint8_t>(Page::Count);
@@ -25,12 +25,18 @@ void goToFirstPage() {
     currentPage = Page::Humidity;
 }
 
+
 void displayPage() {
-    if (millis() - prevDisplay < 3000) {
+    if (isFlagChanged()) {
+        prevDisplay = millis();
+        checkFlags();
+    } else if (millis() - prevDisplay < settings.dataRefreshDelay) {
         return;
+    } else {
+        prevDisplay = millis();
+        checkFlags();
     }
-    prevDisplay = millis();
-    checkFlags();
+
     switch (currentPage) {
         case Page::Humidity:{
             humidityPage();
@@ -41,6 +47,7 @@ void displayPage() {
             break; 
         }
     }
+    previousPage = currentPage;
 }
 
 void humidityPage() {

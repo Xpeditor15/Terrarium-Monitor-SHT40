@@ -19,6 +19,9 @@
 #define NEXT_BUT 15
 #define PREV_BUT 17
 
+#define DEBOUNCE_DELAY 500
+#define DATA_REFRESH_DELAY 3000
+
 enum class Page : uint8_t {
     Humidity,
     Temperature,
@@ -37,9 +40,27 @@ struct prevDataStruct {
     float prevSHTHumi;
 };
 
+struct buttonPress {
+    unsigned long lastFlagChanged = 0;
+    unsigned long lastNextPress = 0;
+    unsigned long lastPrevPress = 0;
+};
+
+struct pageControlBtn {
+    bool nextPageFlag = false;
+    bool prevPageFlag = false;
+};
+
+struct userSettings {
+    unsigned long dataRefreshDelay = 3000;
+};
+
 extern Page currentPage;
 extern Page previousPage;
 extern prevDataStruct prevData;
+extern buttonPress btnPress;
+extern pageControlBtn pageBtn;
+extern userSettings settings;
 
 //Definitions for 0.96 inch OLED screen
 #define SCREEN_WIDTH 128
@@ -92,9 +113,6 @@ void printSHT();
 void readSHT();
 
 //Helper Functions:
-extern bool nextPageFlags;
-extern bool prevPageFlags;
-
 void IRAM_ATTR nextPageISR();
 void IRAM_ATTR prevPageISR();
 bool isPrevDataEmpty();
@@ -102,6 +120,7 @@ void readAllSens();
 void readHumi();
 void readTemp();
 void checkFlags();
+bool isFlagChanged();
 
 //Page Control Functions:
 void nextPage();

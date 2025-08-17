@@ -1,16 +1,40 @@
 #include "main.h"
 
-bool nextPageFlag = false;
-bool prevPageFlag = false;
+buttonPress btnPress;
+pageControlBtn pageBtn;
 
-void IRAM_ATTR nextPageISR() {
+/*void IRAM_ATTR nextPageISR() {
     Serial.println("next page");
     nextPageFlag = true;
+}*/
+
+void IRAM_ATTR nextPageISR() {
+    unsigned long current = millis();
+    
+    if (current - btnPress.lastNextPress < DEBOUNCE_DELAY) {
+        return;
+    }
+    
+    btnPress.lastNextPress = current;
+    pageBtn.nextPageFlag = true;
+    Serial.println("Next Page");
 }
 
 void IRAM_ATTR prevPageISR() {
-    prevPageFlag = true;
+    unsigned long current = millis();
+
+    if (current - btnPress.lastPrevPress < DEBOUNCE_DELAY) {
+        return;
+    }
+
+    btnPress.lastPrevPress = current;
+    pageBtn.prevPageFlag = true;
+    Serial.println("Prev Page");
 }
+
+/*void IRAM_ATTR prevPageISR() {
+    prevPageFlag = true;
+}*/
 
 bool isPrevDataEmpty() {
     return isnan(prevData.prevBMETemp)
@@ -47,14 +71,25 @@ void readTemp() {
 }
 
 void checkFlags() {
-    if (nextPageFlag) {
+    if (pageBtn.nextPageFlag) {
         Serial.println("next button pressed");
         nextPage();
-        nextPageFlag = false;
+        pageBtn.nextPageFlag = false;
     }
-    if (prevPageFlag) {
+    if (pageBtn.prevPageFlag) {
         Serial.println("prev button pressed");
         prevPage();
-        prevPageFlag = false;
+        pageBtn.prevPageFlag = false;
     }
+}
+
+bool isFlagChanged() {
+    unsigned long current = millis();
+
+    if (current - btnPress.lastFlagChanged < DEBOUNCE_DELAY) {
+        return false;
+    }
+
+    btnPress.lastFlagChanged = current;
+    return pageBtn.nextPageFlag || pageBtn.prevPageFlag;
 }
