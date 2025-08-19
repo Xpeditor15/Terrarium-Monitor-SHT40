@@ -14,8 +14,8 @@
 
 
 //General definitions
-#define SECOND_SDA 37
-#define SECOND_SCL 38
+#define SECOND_SDA 40
+#define SECOND_SCL 41
 #define NEXT_BUT 15
 #define PREV_BUT 17
 

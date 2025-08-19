@@ -49,11 +49,11 @@ void setup() {
       for(;;);
     }
 
-    if (!setupBME(&secondWire, 0x76)) {
+    if (!setupSHT(&secondWire)) {
       for(;;);
     }
 
-    if (!setupSHT(&secondWire)) {
+    if (!setupBME(&secondWire, 0x76)) {
       for(;;);
     }
 
