@@ -40,6 +40,8 @@ void setup() {
     pinMode(NEXT_BUT, INPUT_PULLUP);
     pinMode(PREV_BUT, INPUT_PULLUP);
 
+    pinMode(powerSwitch, OUTPUT);
+
     attachInterrupt(digitalPinToInterrupt(NEXT_BUT), nextPageISR, FALLING);
     attachInterrupt(digitalPinToInterrupt(PREV_BUT), prevPageISR, FALLING);
 
@@ -63,4 +65,16 @@ void setup() {
 
 void loop() {
   displayPage();
+  pingPower();
+}
+
+unsigned long lastPing = 0;
+
+void pingPower() {
+  if (millis() - lastPing >= 10000) {
+    lastPing = millis();
+    digitalWrite(powerSwitch, HIGH);
+    delay(100);
+    digitalWrite(powerSwitch, LOW);
+  }
 }

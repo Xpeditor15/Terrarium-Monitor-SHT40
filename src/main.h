@@ -19,6 +19,9 @@
 #define NEXT_BUT 15
 #define PREV_BUT 17
 
+#define powerSwitch 42
+extern unsigned long lastPing;
+
 #define DEBOUNCE_DELAY 500
 #define DATA_REFRESH_DELAY 3000
 
@@ -88,6 +91,7 @@ extern Adafruit_Sensor* bmePres;
 //Definitions for SHT40 sensor
 extern Adafruit_SHT4x sht40;
 
+void pingPower();
 
 //Function declarations
 //Display Functions:
