@@ -153,8 +153,6 @@ void printPresPageStats() {
     display.drawBitmap(60, 0, imageData, 16, 16, 1);
     display.setCursor(0, 24);
     display.println("Pressure: ");
-    //display.setCursor(0, 48);
-    //display.println("Alt: ");
     display.display();
 }
 
@@ -172,8 +170,6 @@ void printPresPageData() {
     display.setTextSize(2);
     display.setCursor(0, 48);
     display.printf("%.1fhPa\n", prevData.prevBMEPres);
-    //display.setCursor(60, 48);
-    //display.printf("%.1fm\n", prevData.prevBMEAlt);
     display.display();
 }
 

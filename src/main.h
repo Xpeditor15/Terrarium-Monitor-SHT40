@@ -18,13 +18,16 @@
 #define SECOND_SCL 41
 #define NEXT_BUT 15
 #define PREV_BUT 17
-
-#define powerSwitch 42
+#define powerSwitch 42 //sends pulse every 10 seconds to PSU to keep it awake
+#define USE_EXT0_WAKEUP 1 //enable sleep mode
+#define BUTTON_PIN_BITMASK(GPIO) (1ULL << GPIO)
 extern unsigned long lastPing;
+extern unsigned long lastActivityTime; //used to monitor last button press for entering sleep mode
 
 #define DEBOUNCE_DELAY 500
 #define DATA_REFRESH_DELAY 3000
 
+//structure for page enumeration
 enum class Page : uint8_t {
     Humidity,
     Temperature,
@@ -34,6 +37,7 @@ enum class Page : uint8_t {
     Count
 };
 
+//structure used to hold previous data readings
 struct prevDataStruct {
     Page current;
     float prevBMETemp;
@@ -44,17 +48,20 @@ struct prevDataStruct {
     float prevSHTHumi;
 };
 
+//used to checking button debounce
 struct buttonPress {
     unsigned long lastFlagChanged = 0;
     unsigned long lastNextPress = 0;
     unsigned long lastPrevPress = 0;
 };
 
+//used to track page change requests
 struct pageControlBtn {
     bool nextPageFlag = false;
     bool prevPageFlag = false;
 };
 
+//used to store user specific settings
 struct userSettings {
     unsigned long dataRefreshDelay = 3000;
     unsigned long sleepDelay = 60000;
@@ -66,6 +73,7 @@ extern prevDataStruct prevData;
 extern buttonPress btnPress;
 extern pageControlBtn pageBtn;
 extern userSettings settings;
+
 
 //Definitions for 0.96 inch OLED screen
 #define SCREEN_WIDTH 128
