@@ -25,12 +25,15 @@ Adafruit_Sensor *bmePres = bme.getPressureSensor();
 /*
 Page 0: SHT40 and BME280 Humidity
 Page 1: SHT40 and BME280 Temperature
-Page 2: BME280 Pressure and Altitude
+Page 2: BME280 Pressure
+Page 3: BME280 Altitude
 Page 3: Settings 
 */
 
 Page currentPage = Page::Humidity;
 Page previousPage = Page::Humidity; //defaults to unset/count during initialization
+
+volatile bool alwaysOn = false; //false -> always-on mode off; true -> always-on mode on
 
 void setup() {
     Serial.begin(115200);
