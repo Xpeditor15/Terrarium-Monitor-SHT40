@@ -9,6 +9,7 @@
 #include <Adafruit_SHT4x.h>
 #include "driver/rtc_io.h"
 #include "driver/gpio.h"
+
 #include "esp_sleep.h"
 #include "esp_mac.h"
 
@@ -18,16 +19,11 @@
 #define SECOND_SCL 41
 #define NEXT_BUT 15
 #define PREV_BUT 17
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 #define powerSwitch 42 //sends pulse every 10 seconds to PSU to keep it awake
 #define USE_EXT0_WAKEUP 1 //enable sleep mode
 #define BUTTON_PIN_BITMASK(GPIO) (1ULL << GPIO)
 extern unsigned long lastPing;
 extern unsigned long lastActivityTime; //used to monitor last button press for entering sleep mode
-=======
-=======
->>>>>>> Stashed changes
 #define SELECT_BUT 12
 #define BACK_BUT 11
 
@@ -35,10 +31,6 @@ extern unsigned long lastActivityTime; //used to monitor last button press for e
 
 extern unsigned long lastPing;
 extern volatile bool alwaysOn;
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 #define DEBOUNCE_DELAY 500
 #define DATA_REFRESH_DELAY 3000

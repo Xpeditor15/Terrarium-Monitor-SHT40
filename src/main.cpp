@@ -49,6 +49,7 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(PREV_BUT), prevPageISR, FALLING);
 
     //sleep mode settings
+    /*
 #if USE_EXT0_WAKEUP
 esp_sleep_enable_ext0_wakeup(static_cast<gpio_num_t>(NEXT_BUT), 0);
 esp_sleep_enable_ext0_wakeup(static_cast<gpio_num_t>(PREV_BUT), 0);
@@ -57,6 +58,7 @@ rtc_gpio_pullup_en(static_cast<gpio_num_t>(NEXT_BUT));
 rtc_gpio_pulldown_dis(static_cast<gpio_num_t>(PREV_BUT));
 rtc_gpio_pullup_en(static_cast<gpio_num_t>(PREV_BUT));
 #endif
+*/
 
     prevData.current = currentPage;
 
