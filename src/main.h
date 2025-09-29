@@ -31,6 +31,7 @@ extern unsigned long lastActivityTime; //used to monitor last button press for e
 
 extern unsigned long lastPing;
 extern volatile bool alwaysOn;
+extern volatile bool sleepMode;
 
 #define DEBOUNCE_DELAY 500
 #define DATA_REFRESH_DELAY 3000
@@ -73,6 +74,9 @@ struct pageControlBtn {
 struct userSettings {
     unsigned long dataRefreshDelay = 3000;
     unsigned long sleepDelay = 60000;
+    bool alwaysOn = false;
+    bool heatingOn = false;
+    unsigned long heatingDelay = 6000; //default 1 minute delay for heating
 };
 
 extern Page currentPage;
@@ -121,6 +125,7 @@ void printPresPageStats();
 void printPresPageData();
 void printAltPageStats();
 void printAltPageData();
+void printSettingsPageStats();
 void clearPrintedPage(Page page);
 void clearPrintedData(Page page);
 void test();
@@ -146,6 +151,8 @@ void readPres();
 void readAlt();
 void checkFlags();
 bool isFlagChanged();
+void enterSleepMode();
+void exitSleepMode();
 
 //Page Control Functions:
 void nextPage();

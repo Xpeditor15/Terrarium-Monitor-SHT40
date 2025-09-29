@@ -96,3 +96,15 @@ bool isFlagChanged() {
     btnPress.lastFlagChanged = current;
     return pageBtn.nextPageFlag || pageBtn.prevPageFlag;
 }
+
+void enterSleepMode() {
+    sleepMode = true;
+
+    display.ssd1306_command(SSD1306_DISPLAYOFF); //sets display off to save power
+}
+
+void exitSleepMode() {
+    sleepMode = false;
+
+    display.ssd1306_command(SSD1306_DISPLAYON);
+}

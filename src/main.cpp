@@ -5,6 +5,15 @@ I2C Addresses:
 - SHT40: 0x44
 */
 
+/*
+To-Do List:
+1. Need to add heating function for SHT40 when humidity reaches 100% 
+  - Add fixed timer to enable heating at night automatically?
+  - Let user set manually in settings to enable or disable
+2. Add settings page to change data refresh rate and sleep delay
+  - Disable screen but keep ESP32 on
+*/
+
 
 #include "main.h"
 
@@ -34,6 +43,7 @@ Page currentPage = Page::Humidity;
 Page previousPage = Page::Humidity; //defaults to unset/count during initialization
 
 volatile bool alwaysOn = false; //false -> always-on mode off; true -> always-on mode on
+volatile bool sleepMode = false; //false -> normal mode; true -> sleep mode
 
 void setup() {
     Serial.begin(115200);
@@ -47,18 +57,6 @@ void setup() {
 
     attachInterrupt(digitalPinToInterrupt(NEXT_BUT), nextPageISR, FALLING);
     attachInterrupt(digitalPinToInterrupt(PREV_BUT), prevPageISR, FALLING);
-
-    //sleep mode settings
-    /*
-#if USE_EXT0_WAKEUP
-esp_sleep_enable_ext0_wakeup(static_cast<gpio_num_t>(NEXT_BUT), 0);
-esp_sleep_enable_ext0_wakeup(static_cast<gpio_num_t>(PREV_BUT), 0);
-rtc_gpio_pulldown_dis(static_cast<gpio_num_t>(NEXT_BUT));
-rtc_gpio_pullup_en(static_cast<gpio_num_t>(NEXT_BUT));
-rtc_gpio_pulldown_dis(static_cast<gpio_num_t>(PREV_BUT));
-rtc_gpio_pullup_en(static_cast<gpio_num_t>(PREV_BUT));
-#endif
-*/
 
     prevData.current = currentPage;
 
@@ -81,6 +79,15 @@ rtc_gpio_pullup_en(static_cast<gpio_num_t>(PREV_BUT));
 void loop() {
   displayPage();
   pingPower();
+}
+
+void loop() {
+  if (!sleepMode) {
+    displayPage();
+    pingPower();
+  } else {
+    Serial.println("In sleep mode, skipping displayPage");
+  }
 }
 
 unsigned long lastPing = 0;

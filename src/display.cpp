@@ -216,7 +216,30 @@ void printAltPageData() {
 }
 
 void printSettingsPageStats() {
-    
+    static const uint8_t imageData[] = {
+        0x00,0x00
+        ,0x00,0x00
+        ,0x00,0x40
+        ,0x01,0xf0
+        ,0x01,0x10
+        ,0x06,0x18
+        ,0x03,0x10
+        ,0x01,0xf0
+        ,0x06,0xd0
+        ,0x0f,0x00
+        ,0x19,0x60
+        ,0x09,0x90
+        ,0x0f,0x60
+        ,0x00,0x00
+        ,0x00,0x00
+        ,0x00,0x00
+    };
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(0, 0);
+    display.println("Set: ");
+    display.drawBitmap(60, 0, imageData, 16, 16, 1);
+    display.setCursor(0, 24);
 }
 
 void clearPrintedData(Page page) {
