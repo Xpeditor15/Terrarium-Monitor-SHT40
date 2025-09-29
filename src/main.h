@@ -77,6 +77,7 @@ struct userSettings {
     bool alwaysOn = false;
     bool heatingOn = false;
     unsigned long heatingDelay = 6000; //default 1 minute delay for heating
+    unsigned long heatingDuration = 500;
 };
 
 extern Page currentPage;

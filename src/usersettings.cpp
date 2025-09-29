@@ -8,6 +8,7 @@ enum class SettingID : uint8_t {
     AlwaysOn,
     HeatingOn,
     HeatingDelay,
+    HeatingDuration,
     Count
 };
 
@@ -72,6 +73,42 @@ static const settingStructures SETTINGS[] = {
         0, 
         &userSettings::alwaysOn,
         nullptr //not an enum
+    },
+    {
+        SettingID::HeatingOn,
+        SettingType::Bool,
+        "Heating: ",
+        "",
+        nullptr,
+        0,
+        0,
+        0,
+        &userSettings::heatingOn,
+        nullptr
+    },
+    {
+        SettingID::HeatingDelay,
+        SettingType::Number,
+        "Heating Delay: ",
+        "ms",
+        &userSettings::heatingDelay,
+        2000, //min delay 2 seconds, max delay 10 minutes, with 1 second intervals
+        600000,
+        1000,
+        nullptr,
+        nullptr
+    },
+    {
+        SettingID::HeatingDuration,
+        SettingType::Number,
+        "Heat Duration:",
+        "ms",
+        &userSettings::heatingDuration,
+        100, 
+        2000, 
+        100,
+        nullptr, 
+        nullptr
     }
 };
 
@@ -79,6 +116,37 @@ void printSettingsPageData() {
     display.setTextColor(SSD1306_WHITE);
     display.setTextSize(1);
     display.setCursor(0, 24);
-    
+    int currentLine = 24; //records the top most y position of the cursor
 
+    for (int i = 0; i < static_cast<int>(SettingID::Count); i++) {
+        
+        
+        
+        
+        const settingStructures& setting = SETTINGS[i];
+        display.print(setting.name);
+        display.print(": ");
+
+        switch (setting.settingsType) {
+            case SettingType::Number: {
+                unsigned long value = settings.*(setting.numberField);
+                display.print(value);
+                display.print(" ");
+                display.println(setting.unit);
+                break;
+            }
+            case SettingType::Bool: {
+                bool value = settings.*(setting.boolField);
+                display.println(value ? "On" : "Off");
+                break;
+            }
+            case SettingType::Enum: {
+                uint8_t value = settings.*(setting.enumField);
+                display.print(value);
+                display.print(" ");
+                display.println(setting.unit);
+                break;
+            }
+        }
+    }
 }

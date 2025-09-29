@@ -77,11 +77,6 @@ void setup() {
 }
 
 void loop() {
-  displayPage();
-  pingPower();
-}
-
-void loop() {
   if (!sleepMode) {
     displayPage();
     pingPower();
