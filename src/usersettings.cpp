@@ -1,7 +1,5 @@
 #include "main.h"
 
-userSettings settings; //initialize user settings
-
 enum class SettingID : uint8_t {
     DataRefreshDelay,
     SleepDelay,
@@ -112,41 +110,28 @@ static const settingStructures SETTINGS[] = {
     }
 };
 
+userSettings settings; //initialize user settings
+int highlightedOption = static_cast<int>(SettingID::DataRefreshDelay);
+
 void printSettingsPageData() {
     display.setTextColor(SSD1306_WHITE);
     display.setTextSize(1);
     display.setCursor(0, 24);
     int currentLine = 24; //records the top most y position of the cursor
+    size_t settingsCount = static_cast<size_t>(SettingID::Count); //calculates the number of setting options
+    int index = 0;
 
-    for (int i = 0; i < static_cast<int>(SettingID::Count); i++) {
-        
-        
-        
-        
-        const settingStructures& setting = SETTINGS[i];
-        display.print(setting.name);
-        display.print(": ");
-
-        switch (setting.settingsType) {
-            case SettingType::Number: {
-                unsigned long value = settings.*(setting.numberField);
-                display.print(value);
-                display.print(" ");
-                display.println(setting.unit);
-                break;
-            }
-            case SettingType::Bool: {
-                bool value = settings.*(setting.boolField);
-                display.println(value ? "On" : "Off");
-                break;
-            }
-            case SettingType::Enum: {
-                uint8_t value = settings.*(setting.enumField);
-                display.print(value);
-                display.print(" ");
-                display.println(setting.unit);
-                break;
-            }
+    for (int i = 0; i < settingsCount; i++) {
+        if (currentLine < display.height() - 8) { //checks if there is space in display
+            display.setCursor(0, currentLine);
+            display.print("->");
+            display.setCursor(18, currentLine);
+            display.println(SETTINGS[i].name);
+            currentLine += 8;
         }
     }
+}
+
+void highlightSetting(int index) {
+    
 }
