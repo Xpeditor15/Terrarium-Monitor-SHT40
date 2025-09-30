@@ -112,6 +112,12 @@ static const settingStructures SETTINGS[] = {
 
 userSettings settings; //initialize user settings
 int highlightedOption = static_cast<int>(SettingID::DataRefreshDelay);
+settingStructures settingsDisplayed[] = {
+    SETTINGS[highlightedOption],
+    SETTINGS[(highlightedOption + 1) % static_cast<size_t>(SettingID::Count)],
+    SETTINGS[(highlightedOption + 2) % static_cast<size_t>(SettingID::Count)],
+    SETTINGS[(highlightedOption + 3) % static_cast<size_t>(SettingID::Count)]
+};
 
 void printSettingsPageData() {
     display.setTextColor(SSD1306_WHITE);
@@ -121,15 +127,21 @@ void printSettingsPageData() {
     size_t settingsCount = static_cast<size_t>(SettingID::Count); //calculates the number of setting options
     int index = 0;
 
-    for (int i = 0; i < settingsCount; i++) {
-        if (currentLine < display.height() - 8) { //checks if there is space in display
-            display.setCursor(0, currentLine);
-            display.print("->");
-            display.setCursor(18, currentLine);
-            display.println(SETTINGS[i].name);
-            currentLine += 8;
-        }
+    settingsDisplayed = {
+        SETTINGS[highlightedOption],
+        SETTINGS[(highlightedOption + 1) % settingsCount],
+        SETTINGS[(highlightedOption + 2) % settingsCount],
+        SETTINGS[(highlightedOption + 3) % settingsCount]
+    };
+
+    for (int i = 0; i < 4; i++) {
+        display.print("->");
+        display.setCursor(18, currentLine);
+        Serial.printf("Line %d: %s\n", currentLine, settingsDisplayed[i].name);
+        display.println(SETTINGS[i].name);
+        currentLine += 8;
     }
+    display.display();
 }
 
 void highlightSetting(int index) {

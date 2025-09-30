@@ -23,7 +23,7 @@
 #define USE_EXT0_WAKEUP 1 //enable sleep mode
 #define BUTTON_PIN_BITMASK(GPIO) (1ULL << GPIO)
 extern unsigned long lastPing;
-extern unsigned long lastActivityTime; //used to monitor last button press for entering sleep mode
+extern volatile unsigned long lastActivityTime; //used to monitor last button press for entering sleep mode
 #define SELECT_BUT 12
 #define BACK_BUT 11
 
@@ -140,6 +140,9 @@ void readBME();
 bool setupSHT(TwoWire* i2cSHT);
 void printSHT();
 void readSHT();
+
+//User Settings Functions:
+void printSettingsPageData();
 
 //Helper Functions:
 void IRAM_ATTR nextPageISR();
