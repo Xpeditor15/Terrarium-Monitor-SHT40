@@ -12,6 +12,10 @@ To-Do List:
   - Let user set manually in settings to enable or disable
 2. Add settings page to change data refresh rate and sleep delay
   - Disable screen but keep ESP32 on
+3. Addfeature so that it checks when the up and down buttons are pressed
+  - If buttons are pressed while in settings option, change the value
+  - If buttons are pressed while in settings page, change the settings option
+  - If buttons are pressed while in other pages, can be used as left and right button
 */
 
 
@@ -41,6 +45,8 @@ Page 3: Settings
 
 Page currentPage = Page::Humidity;
 Page previousPage = Page::Humidity; //defaults to unset/count during initialization
+
+deviceMode currentMode = deviceMode::General; //when booting up, the device shows humidity page (in general mode)
 
 volatile bool alwaysOn = false; //false -> always-on mode off; true -> always-on mode on
 volatile bool sleepMode = false; //false -> normal mode; true -> sleep mode

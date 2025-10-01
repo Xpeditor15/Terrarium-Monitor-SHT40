@@ -31,6 +31,7 @@ void resetSetupDisplay() { //run once during void setup
 }
 
 void printHumiPageStats() { //prints the default words for humi page
+    display.clearDisplay();
     static const uint8_t imageData[] = {
         0x00,0x00
         ,0x00,0x00
@@ -78,6 +79,7 @@ void printHumiPageData() {
 }
 
 void printTempPageStats() {
+    display.clearDisplay();
     static const uint8_t imageData[] = {
         0x00,0x00,
         0x01,0x80,
@@ -128,6 +130,7 @@ void printTempPageData() {
 }
 
 void printPresPageStats() {
+    display.clearDisplay();
     static const uint8_t imageData[] ={
         0x00,0x00,
         0x07,0xc0,
@@ -174,6 +177,7 @@ void printPresPageData() {
 }
 
 void printAltPageStats() {
+    display.clearDisplay();
     static const uint8_t imageData[] = {
         0x00,0x00,
         0x07,0xc0,
@@ -216,6 +220,7 @@ void printAltPageData() {
 }
 
 void printSettingsPageStats() {
+    display.clearDisplay();
     static const uint8_t imageData[] = {
         0x04,0xc0
 ,0x07,0xf8

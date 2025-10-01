@@ -67,6 +67,7 @@ void humidityPage() {
     }*/
 
     if (!hasPrintedStats) {
+        currentMode = deviceMode::General;
         clearPrintedPage(previousPage);
         printHumiPageStats();
         hasPrintedStats = true;
@@ -84,6 +85,7 @@ void tempPage() {
     }*/
 
     if (!hasPrintedStats) {
+        currentMode = deviceMode::General;
         clearPrintedPage(previousPage);
         printTempPageStats();
         hasPrintedStats = true;
@@ -95,6 +97,7 @@ void tempPage() {
 
 void presPage() {
     if (!hasPrintedStats) {
+        currentMode = deviceMode::General;
         clearPrintedPage(previousPage);
         printPresPageStats();
         hasPrintedStats = true;
@@ -107,6 +110,7 @@ void presPage() {
 
 void altPage() {
     if (!hasPrintedStats) {
+        currentMode = deviceMode::General;
         clearPrintedPage(previousPage);
         printAltPageStats();
         hasPrintedStats = true;

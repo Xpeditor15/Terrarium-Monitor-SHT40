@@ -7,7 +7,7 @@ void IRAM_ATTR nextPageISR() {
     unsigned long current = millis();
     
     if (current - btnPress.lastNextPress < DEBOUNCE_DELAY) {
-        return;
+        return; //ignore the signal, as it may be noise from the button
     }
     
     btnPress.lastNextPress = current;
@@ -25,6 +25,30 @@ void IRAM_ATTR prevPageISR() {
     btnPress.lastPrevPress = current;
     pageBtn.prevPageFlag = true;
     Serial.println("Prev Page");
+}
+
+void IRAM_ATTR upISR() {
+    unsigned long current = millis();
+
+    if (current - btnPress.lastUpPress < DEBOUNCE_DELAY) {
+        return;
+    }
+
+    btnPress.lastUpPress = current;
+    pageBtn.upFlag = true;
+    Serial.println("Up pressed!");
+}
+
+void IRAM_ATTR downISR() {
+    unsigned long current = millis();
+
+    if (current - btnPress.lastDownPress < DEBOUNCE_DELAY) {
+        return;
+    }
+
+    btnPress.lastDownPress = current;
+    pageBtn.downFlag = true;
+    Serial.println("Down pressed!");
 }
 
 bool isPrevDataEmpty() {
@@ -83,6 +107,19 @@ void checkFlags() {
         Serial.println("prev button pressed");
         prevPage();
         pageBtn.prevPageFlag = false;
+    }
+    if (pageBtn.upFlag) {
+        switch (currentMode) {
+            case deviceMode::General:
+                Serial.println("Up button pressed in general mode");
+                nextPage();
+                break;
+            case deviceMode::Settings:
+                Serial.println("Up button pressed in settings mode");
+                //change settings up
+                break;
+            
+        }
     }
 }
 

@@ -116,7 +116,8 @@ int highlightedOption = static_cast<int>(SettingID::DataRefreshDelay);
 
 settingStructures settingsDisplayed[4]; //declare an array to hold the currently displayed settings options, can only hold 4 due to screen size
 
-void printSettingsPageData() { //prints 4 settings options onto the screen, with the currently highlighted option always at the top`
+
+void printSettingsPageData() { //prints 4 settings options onto the screen, with the currently highlighted option always at the top
     display.setTextColor(SSD1306_WHITE);
     display.setTextSize(1);
     display.setCursor(0, 24);
@@ -139,6 +140,60 @@ void printSettingsPageData() { //prints 4 settings options onto the screen, with
     display.display(); //display all setting options onto the screen
 }
 
-void highlightSetting(int index) {
+
+void highlightSetting() { //highlights the currently selected settings option
+    display.setTextColor(SSD1306_BLACK);
+    display.fillRect(0, 24, 128, 8, SSD1306_WHITE); //create the highlight around the first option
+    display.setCursor(0, 24);
+    display.print("-> ");
+    display.println(settingsDisplayed[0].name);
+    display.display();
+}
+
+
+void enterOptions() {
+    display.clearDisplay();
+    printSettingsPageStats(); //prints the setting page title
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(1);
     
+    settingStructures selectedOption = SETTINGS[highlightedOption]; //get the selected setting structure
+
+    display.setCursor(0, 24);
+    display.printf("%s", selectedOption.name);
+
+    switch (selectedOption.settingsType) {
+        case SettingType::Number: {
+            
+        }
+    }
+}
+
+
+void changeSettings(settingStructures settingOption, bool condition) { //condition is used to specify if user is incrementing or decrementing. only applicable for number types
+    switch (settingOption.settingsType) {
+        case SettingType::Number: {
+            unsigned long &value = settings.*(settingOption.numberField);
+            if (condition) { //true is used to signify incrementing
+                value += settingOption.step;
+            } else if (!condition) {
+                value -= settingOption.step;
+            }
+
+            if (value > settingOption.maxVal) { //reset the value to min value if exceeding max
+                value = settingOption.minVal;
+            } else if (value < settingOption.minVal) {
+                value = settingOption.maxVal;
+            }
+
+            Serial.printf("Changed %s to %lu %s\n", settingOption.name, value, settingOption.unit);
+            break;
+        }
+        case SettingType::Bool: {
+            bool &value = settings.*(settingOption.boolField);
+            value = !value; //toggle the boolean value
+            Serial.printf("Changed %s to %s\n", settingOption.name, value ? "true" : "false");
+            break;
+        }
+    }
 }

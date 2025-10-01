@@ -62,12 +62,16 @@ struct buttonPress {
     unsigned long lastFlagChanged = 0;
     unsigned long lastNextPress = 0;
     unsigned long lastPrevPress = 0;
+    unsigned long lastUpPress = 0;
+    unsigned long lastDownPress = 0;
 };
 
 //used to track page change requests
 struct pageControlBtn {
     bool nextPageFlag = false;
     bool prevPageFlag = false;
+    bool upFlag = false;
+    bool downFlag = false;
 };
 
 //used to store user specific settings
@@ -80,12 +84,20 @@ struct userSettings {
     unsigned long heatingDuration = 500;
 };
 
+//
+enum class deviceMode : uint8_t { //used to identify if the user is currently in general interface, settings page or settings option
+    General, 
+    Settings, 
+    Options
+};
+
 extern Page currentPage;
 extern Page previousPage;
 extern prevDataStruct prevData;
 extern buttonPress btnPress;
 extern pageControlBtn pageBtn;
 extern userSettings settings;
+extern deviceMode currentMode;
 
 
 //Definitions for 0.96 inch OLED screen
@@ -143,10 +155,13 @@ void readSHT();
 
 //User Settings Functions:
 void printSettingsPageData();
+void highlightSetting();
 
 //Helper Functions:
 void IRAM_ATTR nextPageISR();
 void IRAM_ATTR prevPageISR();
+void IRAM_ATTR upISR();
+void IRAM_ATTR downISR();
 bool isPrevDataEmpty();
 void readAllSens();
 void readHumi();
