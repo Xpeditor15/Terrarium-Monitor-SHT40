@@ -112,14 +112,11 @@ static const settingStructures SETTINGS[] = {
 
 userSettings settings; //initialize user settings
 int highlightedOption = static_cast<int>(SettingID::DataRefreshDelay);
-settingStructures settingsDisplayed[] = {
-    SETTINGS[highlightedOption],
-    SETTINGS[(highlightedOption + 1) % static_cast<size_t>(SettingID::Count)],
-    SETTINGS[(highlightedOption + 2) % static_cast<size_t>(SettingID::Count)],
-    SETTINGS[(highlightedOption + 3) % static_cast<size_t>(SettingID::Count)]
-};
 
-void printSettingsPageData() {
+
+settingStructures settingsDisplayed[4]; //declare an array to hold the currently displayed settings options, can only hold 4 due to screen size
+
+void printSettingsPageData() { //prints 4 settings options onto the screen, with the currently highlighted option always at the top`
     display.setTextColor(SSD1306_WHITE);
     display.setTextSize(1);
     display.setCursor(0, 24);
@@ -127,12 +124,10 @@ void printSettingsPageData() {
     size_t settingsCount = static_cast<size_t>(SettingID::Count); //calculates the number of setting options
     int index = 0;
 
-    settingsDisplayed = {
-        SETTINGS[highlightedOption],
-        SETTINGS[(highlightedOption + 1) % settingsCount],
-        SETTINGS[(highlightedOption + 2) % settingsCount],
-        SETTINGS[(highlightedOption + 3) % settingsCount]
-    };
+    settingsDisplayed[0] = SETTINGS[highlightedOption];
+    settingsDisplayed[1] = SETTINGS[(highlightedOption + 1) % settingsCount];
+    settingsDisplayed[2] = SETTINGS[(highlightedOption + 2) % settingsCount];
+    settingsDisplayed[3] = SETTINGS[(highlightedOption + 3) % settingsCount]; //update the currently displayed settings options according to what is currently highlighted
 
     for (int i = 0; i < 4; i++) {
         display.print("->");
@@ -141,7 +136,7 @@ void printSettingsPageData() {
         display.println(SETTINGS[i].name);
         currentLine += 8;
     }
-    display.display();
+    display.display(); //display all setting options onto the screen
 }
 
 void highlightSetting(int index) {
