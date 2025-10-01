@@ -113,9 +113,7 @@ static const settingStructures SETTINGS[] = {
 userSettings settings; //initialize user settings
 int highlightedOption = static_cast<int>(SettingID::DataRefreshDelay);
 
-
 settingStructures settingsDisplayed[4]; //declare an array to hold the currently displayed settings options, can only hold 4 due to screen size
-
 
 void printSettingsPageData() { //prints 4 settings options onto the screen, with the currently highlighted option always at the top
     display.setTextColor(SSD1306_WHITE);
@@ -140,8 +138,7 @@ void printSettingsPageData() { //prints 4 settings options onto the screen, with
     display.display(); //display all setting options onto the screen
 }
 
-
-void highlightSetting() { //highlights the currently selected settings option
+void highlightOption() { //highlights the currently selected settings option
     display.setTextColor(SSD1306_BLACK);
     display.fillRect(0, 24, 128, 8, SSD1306_WHITE); //create the highlight around the first option
     display.setCursor(0, 24);
@@ -150,8 +147,7 @@ void highlightSetting() { //highlights the currently selected settings option
     display.display();
 }
 
-
-void enterOptions() {
+void enterOptions() { //choose the currently highlighted option to change
     display.clearDisplay();
     printSettingsPageStats(); //prints the setting page title
     display.setTextColor(SSD1306_WHITE);
@@ -169,8 +165,7 @@ void enterOptions() {
     }
 }
 
-
-void changeSettings(settingStructures settingOption, bool condition) { //condition is used to specify if user is incrementing or decrementing. only applicable for number types
+void changeOptionValue(settingStructures settingOption, bool condition) { //condition is used to specify if user is incrementing or decrementing. only applicable for number types
     switch (settingOption.settingsType) {
         case SettingType::Number: {
             unsigned long &value = settings.*(settingOption.numberField);

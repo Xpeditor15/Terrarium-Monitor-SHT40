@@ -58,11 +58,19 @@ void setup() {
 
     pinMode(NEXT_BUT, INPUT_PULLUP);
     pinMode(PREV_BUT, INPUT_PULLUP);
+    pinMode(UP_BUT, INPUT_PULLUP);
+    pinMode(DOWN_BUT, INPUT_PULLUP);
+    pinMode(SELECT_BUT, INPUT_PULLUP);
+    pinMode(BACK_BUT, INPUT_PULLUP);
 
     pinMode(powerSwitch, OUTPUT);
 
     attachInterrupt(digitalPinToInterrupt(NEXT_BUT), nextPageISR, FALLING);
     attachInterrupt(digitalPinToInterrupt(PREV_BUT), prevPageISR, FALLING);
+    attachInterrupt(digitalPinToInterrupt(UP_BUT), upISR, FALLING);
+    attachInterrupt(digitalPinToInterrupt(DOWN_BUT), downISR, FALLING);
+    attachInterrupt(digitalPinToInterrupt(SELECT_BUT), selectISR, FALLING);
+    attachInterrupt(digitalPinToInterrupt(BACK_BUT), backISR, FALLING);
 
     prevData.current = currentPage;
 

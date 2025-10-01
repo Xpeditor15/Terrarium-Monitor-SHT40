@@ -19,6 +19,8 @@
 #define SECOND_SCL 41
 #define NEXT_BUT 15
 #define PREV_BUT 17
+#define UP_BUT 16
+#define DOWN_BUT 18
 #define powerSwitch 42 //sends pulse every 10 seconds to PSU to keep it awake
 #define USE_EXT0_WAKEUP 1 //enable sleep mode
 #define BUTTON_PIN_BITMASK(GPIO) (1ULL << GPIO)
@@ -64,6 +66,8 @@ struct buttonPress {
     unsigned long lastPrevPress = 0;
     unsigned long lastUpPress = 0;
     unsigned long lastDownPress = 0;
+    unsigned long lastSelectPress = 0;
+    unsigned long lastBackPress = 0;
 };
 
 //used to track page change requests
@@ -72,6 +76,8 @@ struct pageControlBtn {
     bool prevPageFlag = false;
     bool upFlag = false;
     bool downFlag = false;
+    bool selectFlag = false;
+    bool backFlag = false;
 };
 
 //used to store user specific settings
@@ -155,13 +161,15 @@ void readSHT();
 
 //User Settings Functions:
 void printSettingsPageData();
-void highlightSetting();
+void highlightOption();
 
 //Helper Functions:
 void IRAM_ATTR nextPageISR();
 void IRAM_ATTR prevPageISR();
 void IRAM_ATTR upISR();
 void IRAM_ATTR downISR();
+void IRAM_ATTR selectISR();
+void IRAM_ATTR backISR();
 bool isPrevDataEmpty();
 void readAllSens();
 void readHumi();

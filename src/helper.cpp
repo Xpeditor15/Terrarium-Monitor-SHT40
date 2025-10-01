@@ -30,6 +30,8 @@ void IRAM_ATTR prevPageISR() {
 void IRAM_ATTR upISR() {
     unsigned long current = millis();
 
+    Serial.println("NIGGA UP");
+
     if (current - btnPress.lastUpPress < DEBOUNCE_DELAY) {
         return;
     }
@@ -49,6 +51,30 @@ void IRAM_ATTR downISR() {
     btnPress.lastDownPress = current;
     pageBtn.downFlag = true;
     Serial.println("Down pressed!");
+}
+
+void IRAM_ATTR selectISR() {
+    unsigned long current = millis();
+
+    if (current - btnPress.lastSelectPress < DEBOUNCE_DELAY) {
+        return;
+    }
+
+    btnPress.lastSelectPress = current;
+    pageBtn.selectFlag = true;
+    Serial.println("Select pressed!");
+}
+
+void IRAM_ATTR backISR() {
+    unsigned long current = millis();
+
+    if (current - btnPress.lastBackPress < DEBOUNCE_DELAY) {
+        return;
+    }
+
+    btnPress.lastBackPress = current;
+    pageBtn.backFlag = true;
+    Serial.println("Back pressed!");
 }
 
 bool isPrevDataEmpty() {
@@ -118,8 +144,12 @@ void checkFlags() {
                 Serial.println("Up button pressed in settings mode");
                 //change settings up
                 break;
-            
+            case deviceMode::Options:
+                Serial.println("Up button pressed in options mode");
+                //increment option value;
+                break;
         }
+        pageBtn.upFlag = false;
     }
 }
 
@@ -131,7 +161,7 @@ bool isFlagChanged() {
     }
 
     btnPress.lastFlagChanged = current;
-    return pageBtn.nextPageFlag || pageBtn.prevPageFlag;
+    return pageBtn.nextPageFlag || pageBtn.prevPageFlag || pageBtn.upFlag || pageBtn.downFlag || pageBtn.selectFlag || pageBtn.downFlag;
 }
 
 void enterSleepMode() {
