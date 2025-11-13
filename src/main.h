@@ -35,7 +35,7 @@ extern unsigned long lastPing;
 extern volatile bool alwaysOn;
 extern volatile bool sleepMode;
 
-#define DEBOUNCE_DELAY 500
+#define DEBOUNCE_DELAY 700
 #define DATA_REFRESH_DELAY 3000
 
 //structure for page enumeration
@@ -95,6 +95,45 @@ enum class deviceMode : uint8_t { //used to identify if the user is currently in
     General, 
     Settings, 
     Options
+};
+
+
+//Structure to hold setting details
+enum class SettingID : uint8_t {
+    DataRefreshDelay,
+    SleepDelay,
+    AlwaysOn,
+    HeatingOn,
+    HeatingDelay,
+    HeatingDuration,
+    Count
+};
+
+enum class SettingType : uint8_t {
+    Number,
+    Bool,
+    Enum,
+};
+
+
+struct settingStructures { //creates the structure for each individual setting options containing setting details
+    SettingID id; //unique ID for each individual settings option
+    SettingType settingsType; //type of the setting (Number, Enum, Bool)
+    const char* name; //name (string) of the settings option to show on the display
+    const char* shortName; //short name (string) of the settings option to show
+    const char* unit; //unit (string) of the settings 
+
+    //For number type settings
+    unsigned long userSettings::*numberField; //points to the actual instance of the user settings
+    unsigned long minVal;
+    unsigned long maxVal;
+    unsigned long step;
+
+    //For bool type settings
+    bool userSettings::*boolField;
+
+    //For enum:
+    uint8_t userSettings::*enumField;
 };
 
 extern Page currentPage;
@@ -161,7 +200,11 @@ void readSHT();
 
 //User Settings Functions:
 void printSettingsPageData();
+void upSettings();
 void highlightOption();
+void enterOptions();
+void changeOptionValue(settingStructures settingOption, bool condition);
+
 
 //Helper Functions:
 void IRAM_ATTR nextPageISR();

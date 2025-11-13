@@ -16,7 +16,10 @@ To-Do List:
   - If buttons are pressed while in settings option, change the value
   - If buttons are pressed while in settings page, change the settings option
   - If buttons are pressed while in other pages, can be used as left and right button
-*/
+
+Doing:
+1. Add up down functions to change which setting is selected
+  */
 
 
 #include "main.h"
@@ -91,19 +94,18 @@ void setup() {
 }
 
 void loop() {
-  
-  /*if (!sleepMode) {
+  /*
+  if (!sleepMode) {
     displayPage();
     pingPower();
   } else {
     Serial.println("In sleep mode, skipping displayPage");
   }*/
   
-  
   printSettingsPageStats();
   printSettingsPageData();
-  delay(10000);
-  
+  highlightOption();
+  delay(50000);
 }
 
 unsigned long lastPing = 0;

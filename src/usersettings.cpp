@@ -1,45 +1,12 @@
 #include "main.h"
 
-enum class SettingID : uint8_t {
-    DataRefreshDelay,
-    SleepDelay,
-    AlwaysOn,
-    HeatingOn,
-    HeatingDelay,
-    HeatingDuration,
-    Count
-};
-
-enum class SettingType : uint8_t {
-    Number,
-    Bool,
-    Enum,
-};
-
-struct settingStructures { //creates the structure for each individual setting options containing setting details
-    SettingID id; //unique ID for each individual settings option
-    SettingType settingsType; //type of the setting (Number, Enum, Bool)
-    const char* name; //name (string) of the settings option to show on the display
-    const char* unit; //unit (string) of the settings 
-
-    //For number type settings
-    unsigned long userSettings::*numberField; //points to the actual instance of the user settings
-    unsigned long minVal;
-    unsigned long maxVal;
-    unsigned long step;
-
-    //For bool type settings
-    bool userSettings::*boolField;
-
-    //For enum:
-    uint8_t userSettings::*enumField;
-};
 
 static const settingStructures SETTINGS[] = {
     {
         SettingID::DataRefreshDelay,
         SettingType::Number,
         "Refresh Delay",
+        "Refresh",
         "ms",
         &userSettings::dataRefreshDelay,
         2000, //min delay is 2 seconds, max delay is 1 minute, with 0.5 seconds steps
@@ -52,6 +19,7 @@ static const settingStructures SETTINGS[] = {
         SettingID::SleepDelay,
         SettingType::Number,
         "Sleep Delay",
+        "Sleep",
         "ms",
         &userSettings::sleepDelay,
         5000, //min delay is 5 seconds, max delay is 1 minute, with 1 second steps
@@ -64,6 +32,7 @@ static const settingStructures SETTINGS[] = {
         SettingID::AlwaysOn,
         SettingType::Bool,
         "Always On",
+        "Always On",
         "",
         nullptr,
         0, 
@@ -75,7 +44,8 @@ static const settingStructures SETTINGS[] = {
     {
         SettingID::HeatingOn,
         SettingType::Bool,
-        "Heating: ",
+        "Heating",
+        "Heating",
         "",
         nullptr,
         0,
@@ -87,7 +57,8 @@ static const settingStructures SETTINGS[] = {
     {
         SettingID::HeatingDelay,
         SettingType::Number,
-        "Heating Delay: ",
+        "Heating Delay",
+        "Heat Delay",
         "ms",
         &userSettings::heatingDelay,
         2000, //min delay 2 seconds, max delay 10 minutes, with 1 second intervals
@@ -99,7 +70,8 @@ static const settingStructures SETTINGS[] = {
     {
         SettingID::HeatingDuration,
         SettingType::Number,
-        "Heat Duration:",
+        "Heat Duration",
+        "Duration",
         "ms",
         &userSettings::heatingDuration,
         100, 
@@ -110,12 +82,16 @@ static const settingStructures SETTINGS[] = {
     }
 };
 
+
 userSettings settings; //initialize user settings
-int highlightedOption = static_cast<int>(SettingID::DataRefreshDelay);
+int highlightedOption = static_cast<int>(SettingID::SleepDelay);
+
 
 settingStructures settingsDisplayed[4]; //declare an array to hold the currently displayed settings options, can only hold 4 due to screen size
 
+
 void printSettingsPageData() { //prints 4 settings options onto the screen, with the currently highlighted option always at the top
+    display.clearDisplay();
     display.setTextColor(SSD1306_WHITE);
     display.setTextSize(1);
     display.setCursor(0, 24);
@@ -124,6 +100,7 @@ void printSettingsPageData() { //prints 4 settings options onto the screen, with
     int index = 0;
 
     settingsDisplayed[0] = SETTINGS[highlightedOption];
+    Serial.printf("Highlighted option index: 0, %s\n", settingsDisplayed[0].name);
     settingsDisplayed[1] = SETTINGS[(highlightedOption + 1) % settingsCount];
     settingsDisplayed[2] = SETTINGS[(highlightedOption + 2) % settingsCount];
     settingsDisplayed[3] = SETTINGS[(highlightedOption + 3) % settingsCount]; //update the currently displayed settings options according to what is currently highlighted
@@ -131,21 +108,35 @@ void printSettingsPageData() { //prints 4 settings options onto the screen, with
     for (int i = 0; i < 4; i++) {
         display.print("->");
         display.setCursor(18, currentLine);
-        Serial.printf("Line %d: %s\n", currentLine, settingsDisplayed[i].name);
-        display.println(SETTINGS[i].name);
+        Serial.printf("Line %d: %s\n", currentLine, SETTINGS[highlightedOption+i].name);
+        display.println(SETTINGS[highlightedOption+i].name);
         currentLine += 8;
+        delay(5000);
+        display.display();
     }
     display.display(); //display all setting options onto the screen
 }
 
+
 void highlightOption() { //highlights the currently selected settings option
-    display.setTextColor(SSD1306_BLACK);
     display.fillRect(0, 24, 128, 8, SSD1306_WHITE); //create the highlight around the first option
+    display.setTextColor(SSD1306_BLACK);
     display.setCursor(0, 24);
     display.print("-> ");
-    display.println(settingsDisplayed[0].name);
+    display.println(SETTINGS[highlightedOption].name);
     display.display();
 }
+
+
+void upSettings() { //moves the highlight up by one option
+    Serial.println("Up button pressed in settings mode");
+    uint8_t count = static_cast<uint8_t>(SettingID::Count); //gets the total number of options available
+    highlightedOption = (highlightedOption + 1) % count;
+    printSettingsPageData();
+    highlightOption();
+}
+
+
 
 void enterOptions() { //choose the currently highlighted option to change
     display.clearDisplay();
@@ -156,14 +147,30 @@ void enterOptions() { //choose the currently highlighted option to change
     settingStructures selectedOption = SETTINGS[highlightedOption]; //get the selected setting structure
 
     display.setCursor(0, 24);
-    display.printf("%s", selectedOption.name);
+    display.printf("%s", selectedOption.shortName);
 
     switch (selectedOption.settingsType) {
         case SettingType::Number: {
-            
+            unsigned long currentValue = settings.*(selectedOption.numberField);
+            display.setTextSize(1);
+            display.setCursor(0, 40);
+            display.printf("%lu %s", currentValue, selectedOption.unit);
+            display.display();
+            break;
+        }
+        case SettingType::Bool: {
+            char boolStr[4];
+            if (settings.*(selectedOption.boolField)) strcpy(boolStr, "On");
+            else strcpy(boolStr, "Off");
+            display.setTextSize(1);
+            display.setCursor(0, 40);
+            display.printf("%s", boolStr);
+            display.display();
+            break;
         }
     }
 }
+
 
 void changeOptionValue(settingStructures settingOption, bool condition) { //condition is used to specify if user is incrementing or decrementing. only applicable for number types
     switch (settingOption.settingsType) {

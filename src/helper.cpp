@@ -142,7 +142,7 @@ void checkFlags() {
                 break;
             case deviceMode::Settings:
                 Serial.println("Up button pressed in settings mode");
-                //change settings up
+                upSettings();
                 break;
             case deviceMode::Options:
                 Serial.println("Up button pressed in options mode");
