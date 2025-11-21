@@ -54,6 +54,10 @@ void displayPage() {
             altPage();
             break;
         }
+        case Page::Settings: {
+            settingsPage();
+            break;
+        }
     }
     previousPage = currentPage;
 }
@@ -119,4 +123,17 @@ void altPage() {
 
     printAltPageData();
     Serial.println("printedAltData");
+}
+
+void settingsPage() {
+    if (!hasPrintedStats) {
+        currentMode = deviceMode::Settings;
+        clearPrintedPage(previousPage);
+        printSettingsPageStats();
+        hasPrintedStats = true;
+        Serial.println("printedSettingsStats, hasPrintedStats is true");
+    }
+
+    printSettingsPageData();
+    Serial.println("printedSettingsData");
 }

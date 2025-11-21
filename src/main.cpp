@@ -94,18 +94,17 @@ void setup() {
 }
 
 void loop() {
-  /*
   if (!sleepMode) {
     displayPage();
     pingPower();
   } else {
     Serial.println("In sleep mode, skipping displayPage");
-  }*/
-  
+  }
+  /*
   printSettingsPageStats();
   printSettingsPageData();
   highlightOption();
-  delay(50000);
+  delay(50000);*/
 }
 
 unsigned long lastPing = 0;

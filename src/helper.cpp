@@ -30,8 +30,6 @@ void IRAM_ATTR prevPageISR() {
 void IRAM_ATTR upISR() {
     unsigned long current = millis();
 
-    Serial.println("NIGGA UP");
-
     if (current - btnPress.lastUpPress < DEBOUNCE_DELAY) {
         return;
     }
@@ -138,7 +136,7 @@ void checkFlags() {
         switch (currentMode) {
             case deviceMode::General:
                 Serial.println("Up button pressed in general mode");
-                nextPage();
+                prevPage();
                 break;
             case deviceMode::Settings:
                 Serial.println("Up button pressed in settings mode");
@@ -150,6 +148,23 @@ void checkFlags() {
                 break;
         }
         pageBtn.upFlag = false;
+    }
+    if (pageBtn.downFlag) {
+        switch (currentMode) {
+            case deviceMode::General:
+                Serial.println("Down button pressed in general mode");
+                nextPage();
+                break;
+            case deviceMode::Settings:
+                Serial.println("Down button pressed in settings mode");
+                downSettings();
+                break;
+            case deviceMode::Options:
+                Serial.println("Down button pressed in options mode");
+                //decrement option value;
+                break;
+        }
+        pageBtn.downFlag = false;
     }
 }
 

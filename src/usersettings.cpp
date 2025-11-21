@@ -84,17 +84,12 @@ static const settingStructures SETTINGS[] = {
 
 
 userSettings settings; //initialize user settings
-int highlightedOption = static_cast<int>(SettingID::SleepDelay);
+int highlightedOption = static_cast<int>(SettingID::DataRefreshDelay);
 
 
 settingStructures settingsDisplayed[4]; //declare an array to hold the currently displayed settings options, can only hold 4 due to screen size
 
-
-void printSettingsPageData() { //prints 4 settings options onto the screen, with the currently highlighted option always at the top
-    display.clearDisplay();
-    display.setTextColor(SSD1306_WHITE);
-    display.setTextSize(1);
-    display.setCursor(0, 24);
+void printDefaultSettingsData() {
     int currentLine = 24; //records the top most y position of the cursor
     size_t settingsCount = static_cast<size_t>(SettingID::Count); //calculates the number of setting options
     int index = 0;
@@ -106,15 +101,34 @@ void printSettingsPageData() { //prints 4 settings options onto the screen, with
     settingsDisplayed[3] = SETTINGS[(highlightedOption + 3) % settingsCount]; //update the currently displayed settings options according to what is currently highlighted
 
     for (int i = 0; i < 4; i++) {
-        display.print("->");
-        display.setCursor(18, currentLine);
-        Serial.printf("Line %d: %s\n", currentLine, SETTINGS[highlightedOption+i].name);
-        display.println(SETTINGS[highlightedOption+i].name);
-        currentLine += 8;
-        delay(5000);
+        
+        if (1) {
+            Serial.println("Name is null");
+            display.print("->");
+            display.setCursor(18, currentLine);
+            Serial.printf("Line %d: %s\n", currentLine, SETTINGS[(highlightedOption+i) % settingsCount].name);
+            display.println(SETTINGS[(highlightedOption+i) % settingsCount].name);
+            currentLine += 8;
+        } 
+
         display.display();
     }
+    highlightOption();
     display.display(); //display all setting options onto the screen
+}
+
+void printSettingsPageData() { //prints 4 settings options onto the screen, with the currently highlighted option always at the top
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(1);
+    display.setCursor(0, 24);
+    printDefaultSettingsData();
+}
+
+void clearSettingsPageData() {
+    display.setTextColor(SSD1306_BLACK);
+    display.setTextSize(1);
+    display.setCursor(0, 24);
+    printDefaultSettingsData();
 }
 
 
@@ -130,12 +144,21 @@ void highlightOption() { //highlights the currently selected settings option
 
 void upSettings() { //moves the highlight up by one option
     Serial.println("Up button pressed in settings mode");
+    clearSettingsPageData();
     uint8_t count = static_cast<uint8_t>(SettingID::Count); //gets the total number of options available
-    highlightedOption = (highlightedOption + 1) % count;
+    highlightedOption = (highlightedOption - 1 + count) % count;
     printSettingsPageData();
     highlightOption();
 }
 
+void downSettings() {
+    Serial.println("Down button pressed in settings mode");
+    clearSettingsPageData();
+    uint8_t count = static_cast<uint8_t>(SettingID::Count); //gets the total number of options available
+    highlightedOption = (highlightedOption + 1) % count; //adds count to avoid negative modulo
+    printSettingsPageData();
+    highlightOption();
+}
 
 
 void enterOptions() { //choose the currently highlighted option to change

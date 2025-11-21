@@ -199,8 +199,11 @@ void printSHT();
 void readSHT();
 
 //User Settings Functions:
+void printDefaultSettingsData();
 void printSettingsPageData();
+void clearSettingsPageData();
 void upSettings();
+void downSettings();
 void highlightOption();
 void enterOptions();
 void changeOptionValue(settingStructures settingOption, bool condition);
@@ -233,3 +236,4 @@ void humidityPage();
 void tempPage();
 void presPage();
 void altPage();
+void settingsPage();
