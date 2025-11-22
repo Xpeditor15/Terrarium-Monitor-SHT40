@@ -163,6 +163,7 @@ void downSettings() {
 
 void enterOptions() { //choose the currently highlighted option to change
     display.clearDisplay();
+    display.display();
     printSettingsPageStats(); //prints the setting page title
     display.setTextColor(SSD1306_WHITE);
     display.setTextSize(1);
