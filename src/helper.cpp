@@ -166,6 +166,19 @@ void checkFlags() {
         }
         pageBtn.downFlag = false;
     }
+    if (pageBtn.selectFlag) {
+        Serial.println("Select button pressed");
+        switch (currentMode) {
+            case deviceMode::General:
+                Serial.println("Select button pressed in general mode");
+                break;
+            case deviceMode::Settings:
+                Serial.println("Select button pressed in settings mode");
+                enterOptions();
+                currentMode = deviceMode::Options;
+                break;
+        }
+    }
 }
 
 bool isFlagChanged() {
