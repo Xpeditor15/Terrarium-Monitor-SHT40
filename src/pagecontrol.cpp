@@ -39,18 +39,22 @@ void displayPage() {
 
     switch (currentPage) {
         case Page::Humidity:{
+            currentMode = deviceMode::General;
             humidityPage();
             break;
         }
         case Page::Temperature:{
+            currentMode = deviceMode::General;
             tempPage();
             break; 
         }
         case Page::Pressure:{
+            currentMode = deviceMode::General;
             presPage();
             break;
         }
         case Page::Altitude: {
+            currentMode = deviceMode::General;
             altPage();
             break;
         }

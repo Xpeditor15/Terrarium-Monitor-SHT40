@@ -249,7 +249,7 @@ void printSettingsPageStats() {
 }
 
 void clearPrintedData(Page page) {
-    Serial.printf("In clearPrintedData, clearing data %d\n", static_cast<uint8_t>(page));
+    //Serial.printf("In clearPrintedData, clearing data %d\n", static_cast<uint8_t>(page));
     display.setTextColor(SSD1306_BLACK);
     display.setTextSize(2);
 

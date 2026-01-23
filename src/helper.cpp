@@ -144,7 +144,7 @@ void checkFlags() {
                 break;
             case deviceMode::Options:
                 Serial.println("Up button pressed in options mode");
-                //increment option value;
+                changeOptionValue(true); //increment option value
                 break;
         }
         pageBtn.upFlag = false;
@@ -161,7 +161,7 @@ void checkFlags() {
                 break;
             case deviceMode::Options:
                 Serial.println("Down button pressed in options mode");
-                //decrement option value;
+                changeOptionValue(false); //decrement option value
                 break;
         }
         pageBtn.downFlag = false;

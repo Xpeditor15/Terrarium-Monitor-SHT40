@@ -100,21 +100,24 @@ void printDefaultSettingsData() {
     settingsDisplayed[2] = SETTINGS[(highlightedOption + 2) % settingsCount];
     settingsDisplayed[3] = SETTINGS[(highlightedOption + 3) % settingsCount]; //update the currently displayed settings options according to what is currently highlighted
 
-    for (int i = 0; i < 4; i++) {
-        
-        if (1) {
-            Serial.println("Name is null");
-            display.print("->");
-            display.setCursor(18, currentLine);
-            Serial.printf("Line %d: %s\n", currentLine, SETTINGS[(highlightedOption+i) % settingsCount].name);
-            display.println(SETTINGS[(highlightedOption+i) % settingsCount].name);
-            currentLine += 8;
-        } 
+    if (currentMode != deviceMode::Options) {
+        for (int i = 0; i < 4; i++) {
+            if (1) {
+            //Serial.println("Name is null");
+                display.print("->");
+                display.setCursor(18, currentLine);
+                //Serial.printf("Line %d: %s\n", currentLine, SETTINGS[(highlightedOption+i) % settingsCount].name);
+                display.println(SETTINGS[(highlightedOption+i) % settingsCount].name);
+                currentLine += 8;
+            } 
 
+            display.display();
+        }
+
+        highlightOption();
         display.display();
     }
-    highlightOption();
-    display.display(); //display all setting options onto the screen
+    
 }
 
 void printSettingsPageData() { //prints 4 settings options onto the screen, with the currently highlighted option always at the top
@@ -169,12 +172,14 @@ void enterOptions() { //choose the currently highlighted option to change
     display.setTextSize(1);
     
     settingStructures selectedOption = SETTINGS[highlightedOption]; //get the selected setting structure
+    Serial.printf("Selected option type: %d\n", static_cast<uint8_t>(selectedOption.settingsType));
 
     display.setCursor(0, 24);
     display.printf("%s", selectedOption.shortName);
 
     switch (selectedOption.settingsType) {
         case SettingType::Number: {
+            Serial.printf("SELECTED OPTION TYPE: NUMBER\n");
             unsigned long currentValue = settings.*(selectedOption.numberField);
             display.setTextSize(1);
             display.setCursor(0, 40);
@@ -183,6 +188,7 @@ void enterOptions() { //choose the currently highlighted option to change
             break;
         }
         case SettingType::Bool: {
+            Serial.printf("SELECTED OPTION TYPE: BOOL\n");
             char boolStr[4];
             if (settings.*(selectedOption.boolField)) strcpy(boolStr, "On");
             else strcpy(boolStr, "Off");
@@ -196,9 +202,10 @@ void enterOptions() { //choose the currently highlighted option to change
 }
 
 
-void changeOptionValue(settingStructures settingOption, bool condition) { //condition is used to specify if user is incrementing or decrementing. only applicable for number types
+/*void changeOptionValue(settingStructures settingOption, bool condition) { //condition is used to specify if user is incrementing or decrementing. only applicable for number types
     switch (settingOption.settingsType) {
         case SettingType::Number: {
+            Serial.println("CHANGING NUMBER SETTING");
             unsigned long &value = settings.*(settingOption.numberField);
             if (condition) { //true is used to signify incrementing
                 value += settingOption.step;
@@ -222,4 +229,37 @@ void changeOptionValue(settingStructures settingOption, bool condition) { //cond
             break;
         }
     }
+}*/
+
+
+void changeOptionValue(bool condition) {
+    settingStructures options = SETTINGS[highlightedOption];
+    
+    switch(options.settingsType) {
+        case SettingType::Number: {
+            Serial.println("CHANGING NUMBER SETTING");
+            unsigned long &value = settings.*(options.numberField);
+            if (condition) { //true is used to signify incrementing
+                value += options.step;
+            } else if (!condition) {
+                value -= options.step;
+            }
+
+            if (value > options.maxVal) { //reset the value to min value if exceeding max
+                value = options.minVal;
+            } else if (value < options.minVal) {
+                value = options.maxVal;
+            }
+
+            Serial.printf("Changed %s to %lu %s\n", options.name, value, options.unit);
+            break;
+        }
+        case SettingType::Bool: {
+            bool &value = settings.*(options.boolField);
+            value = !value; //toggle the boolean value
+            Serial.printf("Changed %s to %s\n", options.name, value ? "true" : "false");
+            break;
+        }
+    }
+
 }

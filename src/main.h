@@ -206,7 +206,8 @@ void upSettings();
 void downSettings();
 void highlightOption();
 void enterOptions();
-void changeOptionValue(settingStructures settingOption, bool condition);
+//void changeOptionValue(settingStructures settingOption, bool condition);
+void changeOptionValue(bool condition);
 
 
 //Helper Functions:
