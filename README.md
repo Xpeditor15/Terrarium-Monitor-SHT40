@@ -38,12 +38,5 @@ Compared to other common humidity sensors like the DHT22, the SHT40 sensor modul
 |   Accuracy (Relative Humidity)    |  1.8%  | 2.0% |
 | Accuracy (Temperature) | 0.2C | 0.5C |
 
-```mermaid
-flowchart TD
-    A[Christmas] -->|Get money| B(Go shopping);
-    B --> C{Let me think};
-    C -->|One| D[Laptop];
-    C -->|Two| E[iPhone];
-    C -->|Three| F[fa:fa-car Car];
-```
+<img width="788" height="795" alt="image" src="https://github.com/user-attachments/assets/7e391d55-b9c1-4cdb-8a48-bc9af9e0c3a7" />
 
