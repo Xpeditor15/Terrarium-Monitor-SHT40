@@ -124,11 +124,25 @@ void readAlt() {
 void checkFlags() {
     if (pageBtn.nextPageFlag) {
         Serial.println("next button pressed");
+        
+        if (currentMode == deviceMode::Options) {
+            pageBtn.upFlag = true;
+            pageBtn.nextPageFlag = false;
+            return;
+        
+        }
         nextPage();
         pageBtn.nextPageFlag = false;
     }
     if (pageBtn.prevPageFlag) {
         Serial.println("prev button pressed");
+
+        if (currentMode == deviceMode::Options) {
+            pageBtn.downFlag = true;
+            pageBtn.prevPageFlag = false;
+            return;
+        }
+
         prevPage();
         pageBtn.prevPageFlag = false;
     }
@@ -177,7 +191,33 @@ void checkFlags() {
                 enterOptions();
                 currentMode = deviceMode::Options;
                 break;
+            case deviceMode::Options:
+                Serial.println("Select button pressed in options mode");
+                pageBtn.backFlag = true; //go back to settings page
+                break;
         }
+        pageBtn.selectFlag = false;
+    }
+    if (pageBtn.backFlag) {
+        Serial.println("Back button pressed");
+        switch (currentMode) {
+            case deviceMode::General:
+                Serial.println("Back button pressed in general mode");
+                break;
+            case deviceMode::Settings:
+                Serial.println("Back button pressed in settings mode");
+                goToFirstPage();
+                break;
+            case deviceMode::Options:
+                Serial.println("Back button pressed in options mode");
+                currentMode = deviceMode::Settings;
+                display.clearDisplay();
+                printSettingsPageStats();
+                printSettingsPageData();
+                highlightOption();
+                break;
+        }
+        pageBtn.backFlag = false;
     }
 }
 
@@ -189,7 +229,7 @@ bool isFlagChanged() {
     }
 
     btnPress.lastFlagChanged = current;
-    return pageBtn.nextPageFlag || pageBtn.prevPageFlag || pageBtn.upFlag || pageBtn.downFlag || pageBtn.selectFlag || pageBtn.downFlag;
+    return pageBtn.nextPageFlag || pageBtn.prevPageFlag || pageBtn.upFlag || pageBtn.downFlag || pageBtn.selectFlag || pageBtn.backFlag;
 }
 
 void enterSleepMode() {

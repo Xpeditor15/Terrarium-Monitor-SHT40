@@ -234,6 +234,15 @@ void enterOptions() { //choose the currently highlighted option to change
 
 void changeOptionValue(bool condition) {
     settingStructures options = SETTINGS[highlightedOption];
+
+    display.clearDisplay();
+    display.display();
+    printSettingsPageStats();
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(1);
+
+    display.setCursor(0, 24);
+    display.printf("%s", options.shortName);
     
     switch(options.settingsType) {
         case SettingType::Number: {
@@ -251,12 +260,20 @@ void changeOptionValue(bool condition) {
                 value = options.maxVal;
             }
 
+            display.setCursor(0, 40);
+            display.printf("%lu %s", value, options.unit);
+            display.display();
+
             Serial.printf("Changed %s to %lu %s\n", options.name, value, options.unit);
             break;
         }
         case SettingType::Bool: {
             bool &value = settings.*(options.boolField);
             value = !value; //toggle the boolean value
+
+            display.setCursor(0, 40);
+            display.printf("%s", value ? "On" : "Off");
+            display.display();
             Serial.printf("Changed %s to %s\n", options.name, value ? "true" : "false");
             break;
         }
