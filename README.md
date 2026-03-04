@@ -51,6 +51,7 @@ The device currently has the following features:
 * Humidity, temperature readings using both BME280 and SHT40
 * Pressure and estimated altitude readings using BME280
 * Fully functional settings page to change various device configurations
+* Display blanks and sensor reading halted when reaching sleep timeout to reduce power consumption when not in use
 
 Features to add in the future:
 * Sensor heating capability (currently not available yet since my SHT40 broke T-T)
