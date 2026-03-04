@@ -23,6 +23,8 @@ A ESP32 terrarium monitor written in C++
 
 As the name suggests, this project is to create a portable monitoring device capable of measuring critical parameters within a terrarium (e.g. humidity, temperature) and reptile enclosures based on a SHT40 sensor. An external BME280 sensor module is also added to measure the ambient humidity, temperature, pressure and altitude and can be omitted if desired. 
 
+(The schematic I've used will be added in the future!)
+
 ## Why use the SHT40?
 
 Compared to other common humidity sensors like the DHT22, the SHT40 sensor module offers a significant upgrade in terms of performance and accuracy. 
