@@ -45,8 +45,8 @@ Other than specification upgrades, the SHT40 sensor also comes in a cabled probe
 
 The sensor also contains heating functionality, allowing the sensor to clear up condensation on the sensor surface. Since the humidity within the terrarium is relatively high, this is quite important as condensation on the sensor surface can give false humidity readings.
 
-The user can also change device configurations on the device itself using the designed settings page. 
-It allows the user to change various parameters such as display refresh rate, device sleep timeout, sensor heating and etc easily without having to reprogram the device entirely. 
+The user can change device configurations on the device itself using the designed settings page. 
+It allows the user to adjust various parameters such as display refresh rate, device sleep timeout, sensor heating and etc easily without having to reprogram the device entirely. 
 
 ## Timeline
 The device currently has the following features:
